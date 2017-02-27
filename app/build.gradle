@@ -4,9 +4,7 @@ android {
     signingConfigs {
         config {
             keyAlias 'MyAndroidKey'
-            keyPassword 'nuannuan520'
             storeFile file('/Users/ricogao/Desktop/keystore/mykeystore.jks')
-            storePassword 'nuannuan520'
         }
     }
     compileSdkVersion 25
