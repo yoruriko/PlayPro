@@ -1,4 +1,4 @@
-package com.ricogao.playpro.Util;
+package com.ricogao.playpro.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

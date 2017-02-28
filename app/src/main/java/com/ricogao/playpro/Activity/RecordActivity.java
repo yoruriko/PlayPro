@@ -1,15 +1,13 @@
-package com.ricogao.playpro.Activity;
+package com.ricogao.playpro.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,7 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.ricogao.playpro.R;
-import com.ricogao.playpro.Util.PermissionUtil;
+import com.ricogao.playpro.util.PermissionUtil;
 
 import butterknife.ButterKnife;
 
@@ -81,7 +79,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     protected void onResume() {
         if (mGoogleApiClient.isConnected() && isUpdating) {
-
+            startLocationUpdate();
         }
         super.onResume();
     }
@@ -165,6 +163,14 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+    protected void startLocationUpdate() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdate() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
     @Override
     public void onConnectionSuspended(int i) {
         Log.i(TAG, "Connection Suspended with " + i);
@@ -177,6 +183,13 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     @Override
     public void onLocationChanged(Location location) {
+        if (checkLocationReading(location)) {
+            return;
+        }
+        LatLng currLatlng=new LatLng(location.getLatitude(),location.getLongitude());
+    }
 
+    private boolean checkLocationReading(Location location) {
+        return true;
     }
 }
