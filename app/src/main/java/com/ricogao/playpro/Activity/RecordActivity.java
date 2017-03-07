@@ -1,7 +1,10 @@
 package com.ricogao.playpro.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,8 +28,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.util.PermissionUtil;
+import com.ricogao.playpro.util.SensorProcessUnit;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 @SuppressWarnings("MissingPermission")
 public class RecordActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -34,6 +42,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private final static int MY_PERMISSION_REQUEST_LOCATION = 99;
     private final String REQUESTING_LOCATION_UPDATES_KEY = "requestLocationUpdateKey";
     private final String[] LOCATION_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private final static double SPEED_LIMIT = 12.52;
 
     private GoogleMap mGoogleMap;
     private LocationRequest mLocationRequest;
@@ -42,9 +51,27 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     private boolean isUpdating;
 
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private SensorProcessUnit spu;
+
+    @BindView(R.id.tv_reading)
+    TextView tvReading;
+
+    @OnClick(R.id.btn)
+    public void clickBtn() {
+        initSensorListeners();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_record);
+        ButterKnife.bind(this);
+        initFragment();
+
+
         buildGoogleApiClient();
         buildLocationRequest();
         mGoogleApiClient.connect();
@@ -53,9 +80,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             updateValuesFromBundle(savedInstanceState);
         }
 
-        setContentView(R.layout.activity_record);
-        ButterKnife.bind(this);
-        initFragment();
+
     }
 
     @Override
@@ -76,6 +101,31 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
     }
 
+    private void initSensorListeners() {
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        spu = new SensorProcessUnit();
+
+        if (mSensor != null) {
+            mSensorManager.registerListener(spu, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
+            spu.setUpdateRecordListener(new SensorProcessUnit.OnUpdateRecordListener() {
+                @Override
+                public void onUpdateRecord(float[] value) {
+                    tvReading.setText("Gx:" + value[0] + "\nGy:" + value[1] + "\nGz:" + value[2]);
+                }
+            });
+        }
+
+    }
+
+    private void removeSensorListeners() {
+        if (mSensor != null && spu != null) {
+            mSensorManager.unregisterListener(spu);
+            spu = null;
+            mSensor = null;
+        }
+    }
+
     @Override
     protected void onResume() {
         if (mGoogleApiClient.isConnected() && isUpdating) {
@@ -83,6 +133,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         }
         super.onResume();
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -183,13 +234,40 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     @Override
     public void onLocationChanged(Location location) {
-        if (checkLocationReading(location)) {
+        if (mLastLocation == null) {
+            mLastLocation = location;
             return;
         }
-        LatLng currLatlng=new LatLng(location.getLatitude(),location.getLongitude());
+
+        checkLocationReading(mLastLocation, location);
+
+
     }
 
-    private boolean checkLocationReading(Location location) {
+    private boolean checkLocationReading(Location lastLocation, Location currLocation) {
+
+        //measure in meters
+        float dD = lastLocation.distanceTo(currLocation);
+        //measure in ms
+        long dT = currLocation.getTime() - lastLocation.getTime();
+
+        if (dT <= 0) {
+            //drop readings with same timestamp due to signal errors
+            Log.e(TAG, "Error reading with same timestamp");
+            return false;
+        }
+
+        //measure in m/s
+        float dV = currLocation.hasSpeed() ? currLocation.getSpeed() : (dD / (float) (dT * 1000));
+        if (dV > SPEED_LIMIT) {
+            //drop reading with very large speed
+            Log.e(TAG, "Error reading with too large speed");
+            return false;
+        }
+
+        Log.i(TAG, "Valid Reading: dD:" + dD + ",dT:" + dT + ",dV:" + dV);
+
+
         return true;
     }
 }
