@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">PlayPro</string>
-    <string name="title_activity_record">PlayPro</string>
+    <string name="title_activity_name">PlayPro</string>
 </resources>
