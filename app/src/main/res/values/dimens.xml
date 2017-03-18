@@ -1,3 +1,15 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="conner_radius">4dp</dimen>
+    <dimen name="card_margin">3dp</dimen>
+    <dimen name="profile_img_size">50dp</dimen>
+    <dimen name="right_arrow_size">25dp</dimen>
+    <dimen name="icon_rank_size">30dp</dimen>
+    <dimen name="icon_size_small">40dp</dimen>
+    <dimen name="star_size">25dp</dimen>
+
+    <dimen name="padding_normal">10dp</dimen>
+
+    <dimen name="margin_small">10dp</dimen>
 </resources>

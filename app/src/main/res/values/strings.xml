@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">PlayPro</string>
     <string name="title_activity_name">PlayPro</string>
+
+    <string name="profile_name">Name</string>
+    <string name="profile_position">Position</string>
+    <string name="profile_ranking">Ranking</string>
+    <string name="summary_title">Summary</string>
+    <string name="distance">Distance</string>
+    <string name="unit_km">Km</string>
+    <string name="time">Time</string>
+    <string name="sessions">Sessions</string>
+    <string name="start">Start</string>
 </resources>
