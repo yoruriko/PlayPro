@@ -9,6 +9,12 @@
     <string name="distance">Distance</string>
     <string name="unit_km">Km</string>
     <string name="time">Time</string>
+
     <string name="sessions">Sessions</string>
     <string name="start">Start</string>
+    <string name="speed">Speed</string>
+    <string name="pause">Pause</string>
+    <string name="step_frequency">Step Frequency</string>
+    <string name="lock">Lock</string>
+    <string name="Finish">Finish</string>
 </resources>

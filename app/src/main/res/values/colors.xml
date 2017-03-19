@@ -3,4 +3,19 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="black50">#50000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="red">#ff0000</color>
+    <color name="yellow">#ffff00</color>
+    <color name="green">#00ff00</color>
+
+
+    <color name="sprint">#58FA58</color>
+    <color name="run">#ACFA58</color>
+    <color name="jog">#F4FA58</color>
+    <color name="walk">#FAAC58</color>
+    <color name="stand">#FE2E2E</color>
+
 </resources>

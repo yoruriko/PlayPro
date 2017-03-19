@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_splash_layout);
 
         //show splash screen for 3000ms
         myHandler.postDelayed(new Runnable() {

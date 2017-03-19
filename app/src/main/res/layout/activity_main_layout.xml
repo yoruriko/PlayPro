@@ -12,10 +12,12 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btn_sessions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="Sessions" />
 
         <Button
             android:id="@+id/btn_start"
@@ -39,6 +41,6 @@
         android:layout_above="@id/button_panel"
         android:orientation="vertical">
 
-        <include layout="@layout/content_main" />
+        <include layout="@layout/content_main_layout" />
     </ScrollView>
 </RelativeLayout>

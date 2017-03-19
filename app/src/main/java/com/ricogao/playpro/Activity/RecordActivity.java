@@ -58,8 +58,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     @BindView(R.id.tv_reading)
     TextView tvReading;
 
-    @OnClick(R.id.btn)
-    public void clickBtn() {
+    @OnClick(R.id.btn_start)
+    protected void onStartClick() {
         initSensorListeners();
     }
 
@@ -67,7 +67,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_record);
+        setContentView(R.layout.activity_record_layout);
         ButterKnife.bind(this);
         initFragment();
 
