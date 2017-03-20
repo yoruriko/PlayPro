@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.model.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,11 +25,12 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     private final static String TAG = SessionItemAdapter.class.getSimpleName();
 
-    private List<Event> list;
+    private List<Event> events;
     private SessionItemListener listener;
+    private SimpleDateFormat durationFormat, timestampFormat;
 
     public interface SessionItemListener {
-        void onSessionItemClick(int position);
+        void onSessionItemClick(long eventId);
     }
 
     public class SessionItemHolder extends RecyclerView.ViewHolder {
@@ -49,9 +51,23 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     }
 
 
-    public SessionItemAdapter(SessionItemListener listener, List<Event> list) {
-        this.list = list;
+    public SessionItemAdapter(SessionItemListener listener, List<Event> events) {
+        this.events = events;
         this.listener = listener;
+        durationFormat = new SimpleDateFormat("HH ':' mm ':' ss");
+        timestampFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    }
+
+    public void setListener(SessionItemListener listener) {
+        this.listener = listener;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public List<Event> getEvents() {
+        return events;
     }
 
     @Override
@@ -64,21 +80,23 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     @Override
     public void onBindViewHolder(SessionItemHolder holder, int position) {
-        //// TODO: 2017/3/18 bining layout
-
-        final int id = position;
+        final Event event = events.get(position);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSessionItemClick(id);
+                listener.onSessionItemClick(event.getId());
             }
         });
+        holder.tv_distance.setText(event.getDistance() + "");
+        holder.tv_time.setText(timestampFormat.format(event.getTimestamp()));
+        holder.tv_duration.setText(durationFormat.format(event.getDuration()));
+
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return events.size();
     }
 
 

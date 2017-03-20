@@ -70,6 +70,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private List<Record> records;
     private Polyline track;
 
+    private float totalDistance;
+
 
     @BindView(R.id.tv_reading)
     TextView tvReading;
@@ -77,6 +79,11 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     @OnClick(R.id.btn_start)
     protected void onStartClick() {
         startRecording();
+    }
+
+    @OnClick(R.id.btn_finish)
+    protected void onFinishClick() {
+        stopRecording();
     }
 
     @Override
@@ -250,9 +257,20 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     protected void stopRecording() {
+        Record record = records.get(records.size() - 1);
+        LatLng latlng = new LatLng(record.getLatitude(), record.getLongitude());
+        mGoogleMap.addMarker(new MarkerOptions().title("Finish").position(latlng).icon(BitmapDescriptorFactory.defaultMarker(120)));
+
+        currentEvent.setDuration(records.get(records.size() - 1).getTimestamp() - records.get(0).getTimestamp());
+        currentEvent.setDistance(totalDistance);
+        currentEvent.setRecords(records);
+
+        currentEvent.save();
+
         stopLocationUpdate();
         isUpdating = false;
     }
+
 
     protected void stopLocationUpdate() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -326,6 +344,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             Log.e(TAG, "Error reading with too large speed");
             return;
         }
+
+        totalDistance += dD;
 
         updateLocation(currLocation);//store the location\
         updateTrack(currLocation);

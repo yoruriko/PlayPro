@@ -16,7 +16,7 @@ import java.util.List;
 @Table(database = MyDatabase.class)
 public class Event extends BaseModel {
 
-    List<Record> locations;
+    List<Record> records;
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -60,33 +60,33 @@ public class Event extends BaseModel {
         return Distance;
     }
 
-    public void setLocations(List<Record> locations) {
-        this.locations = locations;
+    public void setRecords(List<Record> locations) {
+        this.records = locations;
     }
 
-    public List<Record> getLocations() {
-        if (locations == null) {
-            return loadAssociatedLocations();
+    public List<Record> getRecords() {
+        if (records == null) {
+            return loadAssociatedRecords();
         }
-        return locations;
+        return records;
     }
 
     @Override
     public void save() {
-        if (this.locations != null) {
-            for (Record r : locations) {
+        if (this.records != null) {
+            for (Record r : records) {
                 r.associateEvent(this);
             }
         }
         super.save();
     }
 
-    public List<Record> loadAssociatedLocations() {
-        this.locations = new Select()
+    public List<Record> loadAssociatedRecords() {
+        this.records = new Select()
                 .from(Record.class)
                 .where(Condition.column(Record_Table.eventId.getNameAlias()).eq(id))
                 .orderBy(Record_Table.timestamp.getNameAlias(), true)
                 .queryList();
-        return locations;
+        return records;
     }
 }
