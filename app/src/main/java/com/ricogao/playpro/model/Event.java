@@ -65,20 +65,19 @@ public class Event extends BaseModel {
     }
 
     public List<Record> getRecords() {
-        if (records == null) {
-            return loadAssociatedRecords();
-        }
         return records;
     }
 
     @Override
     public void save() {
+        super.save();
+
         if (this.records != null) {
             for (Record r : records) {
                 r.associateEvent(this);
             }
         }
-        super.save();
+
     }
 
     public List<Record> loadAssociatedRecords() {
