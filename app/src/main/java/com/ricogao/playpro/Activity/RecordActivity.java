@@ -1,7 +1,6 @@
 package com.ricogao.playpro.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -38,7 +37,6 @@ import com.ricogao.playpro.util.PermissionUtil;
 import com.ricogao.playpro.util.SensorProcessUnit;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -124,30 +122,6 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
     }
 
-    private void initSensorListeners() {
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        spu = new SensorProcessUnit();
-
-        if (mSensor != null) {
-            mSensorManager.registerListener(spu, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
-            spu.setUpdateRecordListener(new SensorProcessUnit.OnUpdateRecordListener() {
-                @Override
-                public void onUpdateRecord(float[] value) {
-                    tvReading.setText("Gx:" + value[0] + "\nGy:" + value[1] + "\nGz:" + value[2]);
-                }
-            });
-        }
-
-    }
-
-    private void removeSensorListeners() {
-        if (mSensor != null && spu != null) {
-            mSensorManager.unregisterListener(spu);
-            spu = null;
-            mSensor = null;
-        }
-    }
 
     @Override
     protected void onResume() {

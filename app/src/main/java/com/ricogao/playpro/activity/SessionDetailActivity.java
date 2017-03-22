@@ -18,7 +18,6 @@ import com.ricogao.playpro.R;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Event_Table;
 import com.ricogao.playpro.model.Record;
-import com.ricogao.playpro.model.Record_Table;
 import com.ricogao.playpro.util.ColouredPolylineTileOverlay;
 
 
