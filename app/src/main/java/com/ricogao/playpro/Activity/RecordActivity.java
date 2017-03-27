@@ -69,20 +69,25 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private Polyline track;
 
     private float totalDistance;
-
+    private int step;
 
     @BindView(R.id.tv_reading)
     TextView tvReading;
 
     @OnClick(R.id.btn_start)
     protected void onStartClick() {
-        startRecording();
+        setSPU();
+        //startRecording();
     }
 
     @OnClick(R.id.btn_finish)
     protected void onFinishClick() {
-        stopRecording();
+        removeSPU();
+        //stopRecording();
     }
+
+    @BindView(R.id.tv_step)
+    TextView tvStep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,6 +278,27 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             checkLocationReading(mLastLocation, location);
             mLastLocation = location;//update last location
         }
+    }
+
+    private void setSPU() {
+        spu = new SensorProcessUnit();
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager.registerListener(spu, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
+        spu.setStepListener(new SensorProcessUnit.OnStepListener() {
+            @Override
+            public void onStep() {
+                step++;
+                tvStep.setText(step + "");
+            }
+        });
+    }
+
+    private void removeSPU(){
+        mSensorManager.unregisterListener(spu);
+        spu.setStepListener(null);
+        spu=null;
     }
 
     private void updateTrack(Location location) {

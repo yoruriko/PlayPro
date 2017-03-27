@@ -7,7 +7,6 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 import java.util.Arrays;
-
 /**
  * Created by ricogao on 2017/3/1.
  * Processing Unit for handling sensor events, recording steps and state of movement.
@@ -20,9 +19,8 @@ public class SensorProcessUnit implements SensorEventListener {
     //raw reading filter window size
     private final static int WINDOW_SIZE = 5;
 
-    //range of the peak acceleration,unit ms^-2
-    private final static float MIN_PEAK_VALUE = SensorManager.STANDARD_GRAVITY * 1.2f;
-    private final static float MAX_PEAK_VALUE = SensorManager.STANDARD_GRAVITY * 2.5f;
+    //filter reading sample size
+    private final static int SAMPLE_SIZE = 50;
 
     //range of the time threshold of a step, unit ms
     private final static long MIN_STEP_THRESHOLD = 200;
@@ -32,8 +30,6 @@ public class SensorProcessUnit implements SensorEventListener {
     private int filterCount = 0;
     private float filterReadings[] = new float[3];
 
-    //store lastReading readings
-    private float lastReading = -1;
 
     //flags to record last direction for peak detection
     private boolean lastDirectionUp = false;
@@ -43,12 +39,41 @@ public class SensorProcessUnit implements SensorEventListener {
     private int lastUpCount;
 
     //record peak and valley in the wave
-    private float wavePeak;
-    private float waveValley;
+    private float samplePeak;
+    private float sampleValley;
 
     //record last peak time
-    private long lastPeakTime;
+    private long lastPeakTime = -1;
 
+    //for change in Acceleration calculating
+    private float lastReading = -1;
+
+    //store sample old
+    private float oldSample = -1;
+
+    //record reading counts
+    private int sampleCount = 0;
+
+    //store samples for dynamic threshold and precision
+    private float sampleReadings[] = new float[50];
+
+    //for sample precision calculation
+    private float lastPeak;
+    private float peakToPeakSum;
+    private int peakCount;
+
+    private float samplePrecision = SensorManager.STANDARD_GRAVITY * 0.2f;
+    private float sampleThreshold = SensorManager.STANDARD_GRAVITY * 1.2f;
+
+    private OnStepListener listener;
+
+    public interface OnStepListener {
+        void onStep();
+    }
+
+    public void setStepListener(OnStepListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -75,65 +100,121 @@ public class SensorProcessUnit implements SensorEventListener {
         filterCount++;
 
         if (filterCount == WINDOW_SIZE) {
-            //take average of magnitude with window size, cancel out noise in sensor's reading
-            double accX = Math.pow(filterReadings[0] / WINDOW_SIZE, 2);
-            double accY = Math.pow(filterReadings[1] / WINDOW_SIZE, 2);
-            double accZ = Math.pow(filterReadings[2] / WINDOW_SIZE, 2);
-
-            //depending on how the phone is positioned,reading on each direction will behave differently
-            //uses the average magnitude to cancel out the offset on one particular axi and therefore
-            //avoid calculating the direction
-            float accAvg = (float) Math.sqrt(accX + accY + accZ);
-            detectStep(accAvg);
-
-            //reset fields
-            Arrays.fill(filterReadings, 0);
-            filterCount = 0;
+            processReading();
         }
-
 
     }
 
-    private void detectStep(float reading) {
+    /**
+     * Smooth readings, minimise error caused by noise
+     */
+    private void processReading() {
+        //take average of magnitude with window size, cancel out noise in sensor's reading
+        double accX = Math.pow(filterReadings[0] * (1.0f / WINDOW_SIZE), 2);
+        double accY = Math.pow(filterReadings[1] * (1.0f / WINDOW_SIZE), 2);
+        double accZ = Math.pow(filterReadings[2] * (1.0f / WINDOW_SIZE), 2);
+
+        //depending on how the phone is positioned,reading on each direction will behave differently
+        //uses the average magnitude to cancel out the offset on one particular axi and therefore
+        //avoid calculating the direction
+        float accAvg = (float) Math.sqrt(accX + accY + accZ);
+        updateSamples(accAvg);
+
+        clearReadingUtils();
+    }
+
+    private void clearReadingUtils() {
+        //reset fields
+        Arrays.fill(filterReadings, 0);
+        filterCount = 0;
+    }
+
+
+    private void updateSamples(float reading) {
+
+        sampleReadings[sampleCount] = reading;
+        sampleCount++;
+
         //first reading
         if (lastReading == -1) {
-            //update lastReading and exit;
             lastReading = reading;
+            oldSample = reading;
             return;
         }
 
-        if (detectPeak(lastReading, reading)) {
-            //update current time
-            long currPeakTime = System.currentTimeMillis();
-            if (isTimeValid(lastPeakTime, currPeakTime)) {
+        //change in Acceleration
+        float dA = Math.abs(lastReading - reading);
+        lastReading = reading;
 
+        if (dA > samplePrecision) {
+            //update new sample if condition holds
+            long sampleTime = System.currentTimeMillis();
+
+            if (detectPeak(oldSample, reading) && isTimeValid(lastPeakTime, sampleTime)) {
+                if (listener != null) {
+                    listener.onStep();
+                }
             }
-
-            lastPeakTime = currPeakTime;
+            //old update sample old when change in Acc lager than precision
+            oldSample = reading;
         }
 
-
-        lastReading = reading;
+        if (sampleCount == SAMPLE_SIZE) {
+            processSample();
+        }
     }
 
+    /**
+     * update precision and threshold dynamically
+     */
+    private void processSample() {
+
+        //Dynamic Threshold = (Max-Min)/2 in the last 50 samples
+        sampleThreshold = (samplePeak - sampleValley) * 0.5f;
+
+        //Dynamic Precision = (Change in peak to peak)/ num of peaks
+        if (peakCount > 0) {//avoid divide by 0
+            samplePrecision = peakToPeakSum * (1.0f / peakCount);
+        }
+        clearSampleUtils();
+
+    }
+
+    private void clearSampleUtils() {
+        //clear sample readings and counters
+        Arrays.fill(sampleReadings, 0);
+
+        samplePeak = sampleThreshold;
+        sampleValley = sampleThreshold;
+
+        sampleCount = 0;
+        peakToPeakSum = 0;
+        peakCount = 0;
+    }
+
+
     private boolean isTimeValid(long lastTime, long currentTime) {
+
         long dT = currentTime - lastTime;
-        return MIN_STEP_THRESHOLD < dT && dT <= MAX_STEP_THRESHOLD;
+        //update last peak time
+        lastPeakTime = currentTime;
+
+        return lastTime == -1 || (MIN_STEP_THRESHOLD < dT && dT <= MAX_STEP_THRESHOLD);
     }
 
     /**
      * Detect Peak in readings
      *
-     * @param oldReading last valid reading
-     * @param newReading current reading
+     * @param oldSample last Valid sample
+     * @param newSample current Valid sample
      * @return is current reading on the peak of wave
      */
-    private boolean detectPeak(float oldReading, float newReading) {
+    private boolean detectPeak(float oldSample, float newSample) {
+
 
         //detect direction of current reading
-        boolean isDirectionUp = (newReading >= oldReading);
+        boolean isDirectionUp = (newSample >= oldSample);
 
-        //update up counts
         if (isDirectionUp) {
             upCount++;
         } else {
@@ -146,18 +227,21 @@ public class SensorProcessUnit implements SensorEventListener {
         1. current direction is down
         2. last direction is up
         3. perilous reading have more than 2 continue up
-        4. the peak is within the range we defined
+        4. the peak is above the dynamic threshold
 
         Condition for a Valid Valley:
         1. last direction is down
         2. current direction is up
+        3. the valley is below the dynamic threshold
         */
-        if (!isDirectionUp && lastDirectionUp && lastUpCount >= 2
-                && (MIN_PEAK_VALUE <= oldReading && oldReading < MAX_PEAK_VALUE)) {
-            wavePeak = oldReading;
+
+        if (!isDirectionUp && lastDirectionUp && lastUpCount >= 2 && oldSample > sampleThreshold) {
+            updatePeak(oldSample);
+
             return true;
-        } else if (!lastDirectionUp && isDirectionUp) {
-            waveValley = oldReading;
+        } else if (!lastDirectionUp && isDirectionUp && oldSample < sampleThreshold) {
+            updateValley(oldSample);
+            return false;
         }
 
         lastDirectionUp = isDirectionUp;
@@ -165,6 +249,28 @@ public class SensorProcessUnit implements SensorEventListener {
         return false;
     }
 
+
+    private void updatePeak(float sample) {
+
+        if (peakCount > 0) {
+            //change in peak value
+            float dPeak = Math.abs(lastPeak - sample);
+            if (samplePeak < sample) {
+                samplePeak = sample;
+            }
+            peakToPeakSum += dPeak;
+        }
+
+        peakCount++;
+        lastPeak = sample;
+
+    }
+
+    private void updateValley(float sample) {
+        if (sampleValley > sample) {
+            sampleValley = sample;
+        }
+    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
