@@ -7,6 +7,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 import java.util.Arrays;
+
 /**
  * Created by ricogao on 2017/3/1.
  * Processing Unit for handling sensor events, recording steps and state of movement.
@@ -23,8 +24,12 @@ public class SensorProcessUnit implements SensorEventListener {
     private final static int SAMPLE_SIZE = 50;
 
     //range of the time threshold of a step, unit ms
-    private final static long MIN_STEP_THRESHOLD = 200;
-    private final static long MAX_STEP_THRESHOLD = 2000;
+    private final static int MIN_STEP_THRESHOLD = 200;
+    private final static int MAX_STEP_THRESHOLD = 2000;
+
+    private final static float MIN_ACCELERATION_WALK = SensorManager.STANDARD_GRAVITY * 0.2f;
+    private final static float MAX_ACCELERATION_WALK = SensorManager.STANDARD_GRAVITY * 2.0f;
+    private final static float MAX_ACCELERATION_RUN = SensorManager.STANDARD_GRAVITY * 3.0f;
 
     //store raw readings within window
     private int filterCount = 0;
@@ -38,9 +43,9 @@ public class SensorProcessUnit implements SensorEventListener {
     private int upCount;
     private int lastUpCount;
 
-    //record peak and valley in the wave
-    private float samplePeak;
-    private float sampleValley;
+    //record Max and Min in past samples
+    private float sampleMax;
+    private float sampleMin;
 
     //record last peak time
     private long lastPeakTime = -1;
@@ -54,16 +59,15 @@ public class SensorProcessUnit implements SensorEventListener {
     //record reading counts
     private int sampleCount = 0;
 
-    //store samples for dynamic threshold and precision
-    private float sampleReadings[] = new float[50];
 
     //for sample precision calculation
     private float lastPeak;
     private float peakToPeakSum;
     private int peakCount;
 
-    private float samplePrecision = SensorManager.STANDARD_GRAVITY * 0.2f;
-    private float sampleThreshold = SensorManager.STANDARD_GRAVITY * 1.2f;
+    //init precision and threshold
+    private float samplePrecision = MIN_ACCELERATION_WALK;
+    private float sampleThreshold = SensorManager.STANDARD_GRAVITY;
 
     private OnStepListener listener;
 
@@ -87,7 +91,7 @@ public class SensorProcessUnit implements SensorEventListener {
     }
 
     /**
-     * Filter Raw event with a given window size to cancel noises and avoid too much calculation
+     * Smooth Raw event with a given window size to cancel noises and avoid too much calculation
      *
      * @param event Raw sensor event
      */
@@ -132,8 +136,13 @@ public class SensorProcessUnit implements SensorEventListener {
 
     private void updateSamples(float reading) {
 
-        sampleReadings[sampleCount] = reading;
         sampleCount++;
+
+        if (reading > sampleMax) {
+            sampleMax = reading;
+        } else if (reading < sampleMin) {
+            sampleMin = reading;
+        }
 
         //first reading
         if (lastReading == -1) {
@@ -169,23 +178,20 @@ public class SensorProcessUnit implements SensorEventListener {
      */
     private void processSample() {
 
-        //Dynamic Threshold = (Max-Min)/2 in the last 50 samples
-        sampleThreshold = (samplePeak - sampleValley) * 0.5f;
-
         //Dynamic Precision = (Change in peak to peak)/ num of peaks
-        if (peakCount > 0) {//avoid divide by 0
-            samplePrecision = peakToPeakSum * (1.0f / peakCount);
-        }
+        //when there are less than 2 peaks in the sample take 1/5 of the sample max as precision
+        samplePrecision = (peakCount > 1) ? peakToPeakSum * (1.0f / peakCount) : sampleMax * 0.1f;
+
+        //Dynamic Threshold = (Max-Min)/2 in the last 50 samples
+        sampleThreshold = (sampleMax - sampleMin) * 0.5f;
+
         clearSampleUtils();
 
     }
 
     private void clearSampleUtils() {
-        //clear sample readings and counters
-        Arrays.fill(sampleReadings, 0);
-
-        samplePeak = sampleThreshold;
-        sampleValley = sampleThreshold;
+        sampleMax = 0;
+        sampleMin = MAX_ACCELERATION_WALK;
 
         sampleCount = 0;
         peakToPeakSum = 0;
@@ -196,6 +202,7 @@ public class SensorProcessUnit implements SensorEventListener {
     private boolean isTimeValid(long lastTime, long currentTime) {
 
         long dT = currentTime - lastTime;
+
         //update last peak time
         lastPeakTime = currentTime;
 
@@ -226,22 +233,13 @@ public class SensorProcessUnit implements SensorEventListener {
         Condition for a Valid Peak:
         1. current direction is down
         2. last direction is up
-        3. perilous reading have more than 2 continue up
+        3. perilous reading have more than 2 continue up sample
         4. the peak is above the dynamic threshold
-
-        Condition for a Valid Valley:
-        1. last direction is down
-        2. current direction is up
-        3. the valley is below the dynamic threshold
         */
 
         if (!isDirectionUp && lastDirectionUp && lastUpCount >= 2 && oldSample > sampleThreshold) {
             updatePeak(oldSample);
-
             return true;
-        } else if (!lastDirectionUp && isDirectionUp && oldSample < sampleThreshold) {
-            updateValley(oldSample);
-            return false;
         }
 
         lastDirectionUp = isDirectionUp;
@@ -251,26 +249,15 @@ public class SensorProcessUnit implements SensorEventListener {
 
 
     private void updatePeak(float sample) {
-
         if (peakCount > 0) {
             //change in peak value
             float dPeak = Math.abs(lastPeak - sample);
-            if (samplePeak < sample) {
-                samplePeak = sample;
-            }
             peakToPeakSum += dPeak;
         }
-
         peakCount++;
         lastPeak = sample;
-
     }
 
-    private void updateValley(float sample) {
-        if (sampleValley > sample) {
-            sampleValley = sample;
-        }
-    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
