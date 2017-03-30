@@ -76,18 +76,6 @@ public class SensorProcessUnit implements SensorEventListener {
 
     private int stepCount = 0;
 
-    private OnStepListener listener;
-
-    public interface OnStepListener {
-        void onStep();
-
-        void onStateChange(int state);
-    }
-
-    public void setOnStepListener(OnStepListener listener) {
-        this.listener = listener;
-    }
-
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -172,9 +160,6 @@ public class SensorProcessUnit implements SensorEventListener {
 
             if (detectPeak(oldSample, reading) && isTimeValid(lastPeakTime, sampleTime)) {
                 stepCount++;
-                if (listener != null) {
-                    listener.onStep();
-                }
             }
             //old update sample old when change in Acc lager than precision
             oldSample = reading;
@@ -197,11 +182,10 @@ public class SensorProcessUnit implements SensorEventListener {
         //Dynamic Threshold = (Max-Min)/2 in the last 50 samples
         sampleThreshold = (sampleMax - sampleMin) * 0.5f;
 
+        //update current state with predict state
         float dT = System.currentTimeMillis() - lastPeakTime;
         currentState = predictState(dT);
-        if (listener != null) {
-            listener.onStateChange(currentState);
-        }
+
         clearSampleUtils();
 
     }
@@ -279,6 +263,13 @@ public class SensorProcessUnit implements SensorEventListener {
         return false;
     }
 
+    public int getStepCount() {
+        return stepCount;
+    }
+
+    public int getCurrentState() {
+        return currentState;
+    }
 
     private void updatePeak(float sample) {
         if (peakCount > 0) {

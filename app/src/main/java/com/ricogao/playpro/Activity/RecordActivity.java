@@ -69,8 +69,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private Polyline track;
 
     private float totalDistance;
-    private int step;
-    private int crrState;
+    private int lastStepCount;
 
     @BindView(R.id.tv_reading)
     TextView tvReading;
@@ -78,13 +77,13 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     @OnClick(R.id.btn_start)
     protected void onStartClick() {
         setSPU();
-        //startRecording();
+        startRecording();
     }
 
     @OnClick(R.id.btn_finish)
     protected void onFinishClick() {
         removeSPU();
-        //stopRecording();
+        stopRecording();
     }
 
     @BindView(R.id.tv_step)
@@ -290,19 +289,6 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(spu, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        spu.setOnStepListener(new SensorProcessUnit.OnStepListener() {
-            @Override
-            public void onStep() {
-                step++;
-                tvStep.setText(step + "," + crrState);
-            }
-
-            @Override
-            public void onStateChange(int state) {
-                crrState = state;
-                tvStep.setText(step + "," + crrState);
-            }
-        });
     }
 
     private void removeSPU() {
@@ -329,6 +315,14 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         record.setTimestamp(location.getTime());
         record.setLatitude(location.getLatitude());
         record.setLongitude(location.getLongitude());
+        record.setState(spu.getCurrentState());
+
+        //update steps and calculate change in steps
+        int step = spu.getStepCount();
+        int dStep = step - lastStepCount;
+        lastStepCount = step;
+
+        record.setSteps(dStep);
 
         records.add(record);
     }
