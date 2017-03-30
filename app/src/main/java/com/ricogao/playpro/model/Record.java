@@ -13,6 +13,11 @@ import com.ricogao.playpro.util.MyDatabase;
  */
 @Table(database = MyDatabase.class)
 public class Record extends BaseModel {
+
+    public static final int STATE_STAND = 0;
+    public static final int STATE_WALK = 1;
+    public static final int STATE_RUN = 2;
+
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
@@ -27,8 +32,29 @@ public class Record extends BaseModel {
     double longitude;
 
     @Column
+    int state;
+
+    @Column
+    int steps;
+
+    @Column
     long eventId;
 
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getSteps() {
+        return steps;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
+    }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;

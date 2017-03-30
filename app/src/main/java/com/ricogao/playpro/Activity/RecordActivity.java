@@ -70,6 +70,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     private float totalDistance;
     private int step;
+    private int crrState;
 
     @BindView(R.id.tv_reading)
     TextView tvReading;
@@ -281,24 +282,32 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void setSPU() {
+        if (spu != null) {
+            removeSPU();
+        }
         spu = new SensorProcessUnit();
+
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(spu, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
-
-        spu.setStepListener(new SensorProcessUnit.OnStepListener() {
+        spu.setOnStepListener(new SensorProcessUnit.OnStepListener() {
             @Override
             public void onStep() {
                 step++;
-                tvStep.setText(step + "");
+                tvStep.setText(step + "," + crrState);
+            }
+
+            @Override
+            public void onStateChange(int state) {
+                crrState = state;
+                tvStep.setText(step + "," + crrState);
             }
         });
     }
 
-    private void removeSPU(){
+    private void removeSPU() {
         mSensorManager.unregisterListener(spu);
-        spu.setStepListener(null);
-        spu=null;
+        spu = null;
     }
 
     private void updateTrack(Location location) {

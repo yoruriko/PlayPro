@@ -6,6 +6,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.ricogao.playpro.model.Record;
+
 import java.util.Arrays;
 
 /**
@@ -14,6 +16,9 @@ import java.util.Arrays;
  */
 
 public class SensorProcessUnit implements SensorEventListener {
+
+
+    private int currentState;
 
     private static final String TAG = SensorProcessUnit.class.getSimpleName();
 
@@ -69,15 +74,20 @@ public class SensorProcessUnit implements SensorEventListener {
     private float samplePrecision = MIN_ACCELERATION_WALK;
     private float sampleThreshold = SensorManager.STANDARD_GRAVITY;
 
+    private int stepCount = 0;
+
     private OnStepListener listener;
 
     public interface OnStepListener {
         void onStep();
+
+        void onStateChange(int state);
     }
 
-    public void setStepListener(OnStepListener listener) {
+    public void setOnStepListener(OnStepListener listener) {
         this.listener = listener;
     }
+
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -136,6 +146,7 @@ public class SensorProcessUnit implements SensorEventListener {
 
     private void updateSamples(float reading) {
 
+
         sampleCount++;
 
         if (reading > sampleMax) {
@@ -160,6 +171,7 @@ public class SensorProcessUnit implements SensorEventListener {
             long sampleTime = System.currentTimeMillis();
 
             if (detectPeak(oldSample, reading) && isTimeValid(lastPeakTime, sampleTime)) {
+                stepCount++;
                 if (listener != null) {
                     listener.onStep();
                 }
@@ -185,8 +197,28 @@ public class SensorProcessUnit implements SensorEventListener {
         //Dynamic Threshold = (Max-Min)/2 in the last 50 samples
         sampleThreshold = (sampleMax - sampleMin) * 0.5f;
 
+        float dT = System.currentTimeMillis() - lastPeakTime;
+        currentState = predictState(dT);
+        if (listener != null) {
+            listener.onStateChange(currentState);
+        }
         clearSampleUtils();
 
+    }
+
+    /**
+     * Predict the state of sample
+     */
+    private int predictState(float dT) {
+        if ((sampleMax - sampleMin) < MIN_ACCELERATION_WALK || dT > MAX_STEP_THRESHOLD) {
+            return Record.STATE_STAND;
+        } else if (sampleMin >= MIN_ACCELERATION_WALK && sampleMax <= MAX_ACCELERATION_WALK) {
+            return Record.STATE_WALK;
+        } else if (sampleMax >= MAX_ACCELERATION_WALK && sampleMax <= MAX_ACCELERATION_RUN) {
+            return Record.STATE_RUN;
+        } else {
+            return Record.STATE_WALK;
+        }
     }
 
     private void clearSampleUtils() {
@@ -257,7 +289,6 @@ public class SensorProcessUnit implements SensorEventListener {
         peakCount++;
         lastPeak = sample;
     }
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
