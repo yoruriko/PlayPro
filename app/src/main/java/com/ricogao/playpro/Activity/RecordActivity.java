@@ -61,7 +61,6 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private boolean isUpdating;
 
     private SensorManager mSensorManager;
-    private Sensor mSensor;
     private SensorProcessUnit spu;
 
     private Event currentEvent;
@@ -69,10 +68,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private Polyline track;
 
     private float totalDistance;
+    private float currentSpeed;
     private int lastStepCount;
-
-    @BindView(R.id.tv_reading)
-    TextView tvReading;
 
     @OnClick(R.id.btn_start)
     protected void onStartClick() {
@@ -86,8 +83,12 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         stopRecording();
     }
 
-    @BindView(R.id.tv_step)
-    TextView tvStep;
+
+    @BindView(R.id.tv_distance)
+    TextView tvDistance;
+
+    @BindView(R.id.tv_speed)
+    TextView tvSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,6 +279,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             checkLocationReading(mLastLocation, location);
             mLastLocation = location;//update last location
         }
+
+
     }
 
     private void setSPU() {
@@ -287,7 +290,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         spu = new SensorProcessUnit();
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(spu, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
@@ -297,6 +300,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void updateTrack(Location location) {
+
         LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
         if (track == null) {
             PolylineOptions option = new PolylineOptions().add(latlng).width(5).color(Color.BLUE).geodesic(true);
@@ -327,6 +331,11 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         records.add(record);
     }
 
+    private void updateUI() {
+        tvDistance.setText(String.format("%.2f", totalDistance * 0.001f) + " km");
+        tvSpeed.setText(String.format("%.2f", currentSpeed * 3.6f) + " km/h");
+    }
+
     private void checkLocationReading(Location lastLocation, Location currLocation) {
 
         //measure in meters
@@ -341,19 +350,19 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         }
 
         //measure in m/s
-        float dV = currLocation.hasSpeed() ? currLocation.getSpeed() : (dD / (float) (dT * 1000));
+        float dV = dD / (dT * 1000);
+
         if (dV > SPEED_LIMIT) {
             //drop reading with very large speed
             Log.e(TAG, "Error reading with too large speed");
             return;
         }
 
+        currentSpeed = dV;
         totalDistance += dD;
 
         updateLocation(currLocation);//store the location\
         updateTrack(currLocation);
-
-        Log.i(TAG, "Valid Reading: dD:" + dD + ",dT:" + dT + ",dV:" + dV);
-
+        updateUI();
     }
 }

@@ -11,11 +11,18 @@
     <color name="yellow">#ffff00</color>
     <color name="green">#00ff00</color>
 
+    <color name="grey">#839096</color>
+    <color name="button_green">#66BB6A</color>
+    <color name="button_yellow">#F1A230</color>
+    <color name="button_red">#D55166</color>
 
     <color name="sprint">#58FA58</color>
     <color name="run">#ACFA58</color>
     <color name="jog">#F4FA58</color>
     <color name="walk">#FAAC58</color>
     <color name="stand">#FE2E2E</color>
+
+    <color name="background_black">#424147</color>
+    <color name="font_grey">#E0E0E0</color>
 
 </resources>
