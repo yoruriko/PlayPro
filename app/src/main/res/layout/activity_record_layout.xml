@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_black">
+
 
     <RelativeLayout
         android:id="@+id/button_panel"
@@ -18,7 +18,7 @@
             android:layout_height="@dimen/button_size_medium"
             android:layout_centerVertical="true"
             android:background="@drawable/button_lock"
-            android:elevation="2dp"
+            android:elevation="@dimen/btn_elevation"
             android:text="@string/lock"
             android:textColor="@color/font_grey" />
 
@@ -29,7 +29,7 @@
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:background="@drawable/button_pause"
-            android:elevation="2dp"
+            android:elevation="@dimen/btn_elevation"
             android:text="@string/start"
             android:textColor="@color/font_grey" />
 
@@ -40,72 +40,137 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/button_stop"
-            android:elevation="2dp"
-            android:text="@string/Finish"
+            android:elevation="@dimen/btn_elevation"
+            android:text="@string/finish"
             android:textColor="@color/font_grey" />
 
     </RelativeLayout>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
+    <LinearLayout
+        android:id="@+id/reading_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/button_panel"
-        android:layout_margin="@dimen/margin_small"
-        card_view:cardBackgroundColor="@color/black50"
-        card_view:cardCornerRadius="@dimen/panel_conner_radius">
+        android:layout_above="@+id/button_panel"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/panel_height">
-
-            <TextView
-                android:id="@+id/tv_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="0 m"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_normal" />
-
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@id/tv_distance"
-                android:layout_below="@id/tv_distance"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/distance"
-                android:textColor="@android:color/white"
+                android:text="Stand"
+                android:textAlignment="center"
+                android:textColor="@color/font_grey"
+                android:textSize="@dimen/font_size_medium"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/current_state_title"
+                android:textColor="@color/font_dark_grey" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_calorie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.0"
+                android:textAlignment="center"
+                android:textColor="@color/font_grey"
+                android:textSize="@dimen/font_size_medium"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/calorie_title"
+                android:textColor="@color/font_dark_grey" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="0 km/h"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_normal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/tv_speed"
-                android:layout_below="@id/tv_speed"
-                android:layout_marginStart="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small"
-                android:text="@string/speed"
-                android:textColor="@android:color/white"
+                android:text="0.00"
+                android:textAlignment="center"
+                android:textColor="@color/font_grey"
+                android:textSize="@dimen/font_size_medium"
                 android:textStyle="bold" />
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/title_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="@string/speed_title"
+                android:textColor="@color/font_dark_grey" />
+        </LinearLayout>
+    </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/info_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/reading_panel"
+        android:layout_margin="@dimen/margin_small"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.0 km"
+            android:textAllCaps="true"
+            android:textColor="@color/font_grey"
+            android:textSize="@dimen/font_size_large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/distance"
+            android:textColor="@color/font_dark_grey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textColor="@color/font_grey"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/info_panel"
+        android:background="@color/font_dark_grey" />
 
 
     <fragment
@@ -113,7 +178,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/cardView"
+        android:layout_above="@id/info_panel"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         tools:context="com.ricogao.playpro.activity.RecordActivity" />

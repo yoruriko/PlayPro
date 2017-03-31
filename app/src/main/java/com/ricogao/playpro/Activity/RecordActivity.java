@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,7 +38,6 @@ import com.ricogao.playpro.util.SensorProcessUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -83,12 +81,6 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         stopRecording();
     }
 
-
-    @BindView(R.id.tv_distance)
-    TextView tvDistance;
-
-    @BindView(R.id.tv_speed)
-    TextView tvSpeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -331,10 +323,6 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         records.add(record);
     }
 
-    private void updateUI() {
-        tvDistance.setText(String.format("%.2f", totalDistance * 0.001f) + " km");
-        tvSpeed.setText(String.format("%.2f", currentSpeed * 3.6f) + " km/h");
-    }
 
     private void checkLocationReading(Location lastLocation, Location currLocation) {
 
@@ -363,6 +351,5 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
         updateLocation(currLocation);//store the location\
         updateTrack(currLocation);
-        updateUI();
     }
 }

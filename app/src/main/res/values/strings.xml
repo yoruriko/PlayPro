@@ -16,5 +16,10 @@
     <string name="pause">Pause</string>
     <string name="step_frequency">Step Frequency</string>
     <string name="lock">Lock</string>
-    <string name="Finish">Finish</string>
+    <string name="finish">Finish</string>
+
+    <string name="current_state_title">Current state</string>
+    <string name="calorie_title">Calories: cal</string>
+    <string name="speed_title">Speed: km/h</string>
+
 </resources>
