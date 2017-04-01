@@ -21,5 +21,6 @@
     <string name="current_state_title">Current state</string>
     <string name="calorie_title">Calories: cal</string>
     <string name="speed_title">Speed: km/h</string>
-
+    <string name="view_sessions">View all sessions</string>
+    <string name="Stats">Stats</string>
 </resources>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_light"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            app:cardBackgroundColor="@color/background_card"
+            app:cardCornerRadius="@dimen/conner_radius">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_normal">
+
+                <ImageView
+                    android:id="@+id/profile_img"
+                    android:layout_width="@dimen/profile_img_size"
+                    android:layout_height="@dimen/profile_img_size"
+                    android:src="@drawable/blank_profile" />
+
+                <TextView
+                    android:id="@+id/profile_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_toEndOf="@id/profile_img"
+                    android:text="@string/profile_name"
+                    android:textColor="@color/font_grey"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/profile_position_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/profile_name_tv"
+                    android:layout_below="@id/profile_name_tv"
+                    android:text="@string/profile_position"
+                    android:textColor="@color/font_dark_grey" />
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/profile_ranking_img"
+                        android:layout_width="@dimen/icon_rank_size"
+                        android:layout_height="@dimen/icon_rank_size"
+                        android:src="@drawable/icon_rank_1" />
+
+                    <TextView
+                        android:id="@+id/profile_ranking_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_ranking"
+                        android:textColor="@color/font_grey"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            app:cardBackgroundColor="@color/background_card"
+            app:cardCornerRadius="@dimen/conner_radius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_normal">
+
+                    <ImageView
+                        android:id="@+id/total_distance_img"
+                        android:layout_width="@dimen/icon_size_small"
+                        android:layout_height="@dimen/icon_size_small"
+                        android:layout_weight="1"
+                        android:src="@drawable/icon_distance"
+                        android:tint="@color/font_grey" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/total_distance_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24.5 km"
+                            android:textColor="@color/font_grey"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/distance"
+                            android:textColor="@color/font_dark_grey" />
+
+
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/total_session_img"
+                        android:layout_width="@dimen/icon_size_small"
+                        android:layout_height="@dimen/icon_size_small"
+                        android:layout_weight="1"
+                        android:src="@drawable/icon_session"
+                        android:tint="@color/font_grey" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:id="@+id/total_session_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="15"
+                            android:textColor="@color/font_grey"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/sessions"
+                            android:textColor="@color/font_dark_grey" />
+
+
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/total_time_img"
+                        android:layout_width="@dimen/icon_size_small"
+                        android:layout_height="@dimen/icon_size_small"
+                        android:layout_weight="1"
+                        android:src="@drawable/icon_time"
+                        android:tint="@color/font_grey" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:id="@+id/total_time_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" 13.4 h"
+                            android:textColor="@color/font_grey"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/time"
+                            android:textColor="@color/font_dark_grey" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+                <RelativeLayout
+                    android:id="@+id/btn_enter_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small"
+                    android:clickable="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/view_sessions"
+                        android:textColor="@color/font_grey"
+                        android:textSize="@dimen/font_size_medium" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/right_arrow"
+                        android:tint="@color/font_grey" />
+                </RelativeLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            app:cardBackgroundColor="@color/background_card"
+            app:cardCornerRadius="@dimen/conner_radius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small"
+                    android:text="@string/Stats"
+                    android:textSize="@dimen/font_size_medium"
+                    android:textColor="@color/font_grey"
+                    android:textStyle="bold" />
+
+                <com.github.mikephil.charting.charts.RadarChart
+                    android:id="@+id/radar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/radar_chart_size" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            app:cardBackgroundColor="@color/background_card"
+            app:cardCornerRadius="@dimen/conner_radius"></android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

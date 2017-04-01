@@ -23,6 +23,8 @@
     <color name="stand">#FE2E2E</color>
 
     <color name="background_black">#424147</color>
+    <color name="background_light">#313136</color>
+    <color name="background_card">#242327</color>
     <color name="font_grey">#E0E0E0</color>
     <color name="font_dark_grey">#9E9E9E</color>
 
