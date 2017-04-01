@@ -22,5 +22,9 @@
     <string name="calorie_title">Calories: cal</string>
     <string name="speed_title">Speed: km/h</string>
     <string name="view_sessions">View all sessions</string>
-    <string name="Stats">Stats</string>
+    <string name="stats">Stats</string>
+    <string name="personal_best">Personal best</string>
+    <string name="fastest_speed">Fastest speed</string>
+    <string name="longest_session">Longest session</string>
+    <string name="longest_distance">Longest distance</string>
 </resources>

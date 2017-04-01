@@ -244,14 +244,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/title_stats"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_small"
-                    android:text="@string/Stats"
-                    android:textSize="@dimen/font_size_medium"
+                    android:text="@string/stats"
                     android:textColor="@color/font_grey"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/font_size_medium" />
 
                 <com.github.mikephil.charting.charts.RadarChart
                     android:id="@+id/radar_chart"
@@ -265,6 +264,167 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/card_margin"
             app:cardBackgroundColor="@color/background_card"
-            app:cardCornerRadius="@dimen/conner_radius"></android.support.v7.widget.CardView>
+            app:cardCornerRadius="@dimen/conner_radius">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_personal_best"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small"
+                    android:text="@string/personal_best"
+                    android:textColor="@color/font_grey"
+                    android:textSize="@dimen/font_size_medium" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+                <RelativeLayout
+                    android:id="@+id/panel_fastest_speed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small">
+
+                    <TextView
+                        android:id="@+id/title_fastest_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fastest_speed"
+                        android:textColor="@color/font_grey" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/title_fastest_speed"
+                        android:text="2017-03-15"
+                        android:textColor="@color/font_dark_grey" />
+
+                    <ImageView
+                        android:id="@+id/arrow_fastest_speed"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/right_arrow"
+                        android:tint="@color/font_grey" />
+
+                    <TextView
+                        android:id="@+id/tv_fastest_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/arrow_fastest_speed"
+                        android:text="12.5 km/h"
+                        android:textColor="@color/font_grey"
+                        android:textSize="@dimen/font_size_medium"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/colorPrimary" />
+
+                <RelativeLayout
+                    android:id="@+id/panel_longest_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small">
+
+                    <TextView
+                        android:id="@+id/title_longest_session"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/longest_session"
+                        android:textColor="@color/font_grey" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/title_longest_session"
+                        android:text="2017-03-15"
+                        android:textColor="@color/font_dark_grey" />
+
+                    <ImageView
+                        android:id="@+id/arrow_longest_session"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/right_arrow"
+                        android:tint="@color/font_grey" />
+
+                    <TextView
+                        android:id="@+id/tv_longest_session"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/arrow_longest_session"
+                        android:text="01:33:25"
+                        android:textColor="@color/font_grey"
+                        android:textSize="@dimen/font_size_medium"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:background="@color/colorPrimary" />
+
+                <RelativeLayout
+                    android:id="@+id/panel_longest_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small">
+
+                    <TextView
+                        android:id="@+id/title_longest_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/longest_distance"
+                        android:textColor="@color/font_grey" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/title_longest_distance"
+                        android:text="2017-03-15"
+                        android:textColor="@color/font_dark_grey" />
+
+                    <ImageView
+                        android:id="@+id/arrow_longest_distance"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/right_arrow"
+                        android:tint="@color/font_grey" />
+
+                    <TextView
+                        android:id="@+id/tv_longest_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/arrow_longest_distance"
+                        android:text="12.2 km"
+                        android:textColor="@color/font_grey"
+                        android:textSize="@dimen/font_size_medium"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 </ScrollView>
