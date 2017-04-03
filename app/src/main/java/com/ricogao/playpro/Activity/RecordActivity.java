@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -13,6 +15,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,10 +38,16 @@ import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Record;
 import com.ricogao.playpro.util.PermissionUtil;
 import com.ricogao.playpro.util.SensorProcessUnit;
+import com.ricogao.playpro.util.TimeUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import butterknife.BindString;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -47,6 +57,9 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     private final static String TAG = RecordActivity.class.getSimpleName();
     private final static int MY_PERMISSION_REQUEST_LOCATION = 99;
+
+    private final static int TIMER_TICK = 1;
+
     private final String REQUESTING_LOCATION_UPDATES_KEY = "requestLocationUpdateKey";
     private final String[] LOCATION_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
     private final static double SPEED_LIMIT = 12.52;
@@ -66,21 +79,90 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private Polyline track;
 
     private float totalDistance;
+    private float totalCalories;
     private float currentSpeed;
     private int lastStepCount;
+    private int currentState;
+
+    private long eventStartTimeStamp;
+
+    private Timer timer;
+    private TimerHandler mHandler = new TimerHandler(this);
 
     @OnClick(R.id.btn_start)
     protected void onStartClick() {
-        setSPU();
         startRecording();
     }
 
     @OnClick(R.id.btn_finish)
     protected void onFinishClick() {
-        removeSPU();
         stopRecording();
     }
 
+    @BindString(R.string.stand)
+    String standString;
+    @BindString(R.string.walk)
+    String walkString;
+    @BindString(R.string.run)
+    String runString;
+
+    @BindView(R.id.tv_distance)
+    TextView tvDistance;
+    @BindView(R.id.tv_time)
+    TextView tvTime;
+    @BindView(R.id.tv_state)
+    TextView tvState;
+    @BindView(R.id.tv_calorie)
+    TextView tvCalorie;
+    @BindView(R.id.tv_speed)
+    TextView tvSpeed;
+
+    @BindView(R.id.signal_1)
+    ImageView signal1;
+    @BindView(R.id.signal_2)
+    ImageView signal2;
+    @BindView(R.id.signal_3)
+    ImageView signal3;
+    @BindView(R.id.signal_4)
+    ImageView signal4;
+    @BindView(R.id.signal_5)
+    ImageView signal5;
+
+
+    private static class TimerHandler extends Handler {
+        WeakReference<RecordActivity> activityWeakReference;
+
+        private TimerHandler(RecordActivity activity) {
+            this.activityWeakReference = new WeakReference<RecordActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            RecordActivity activity = activityWeakReference.get();
+            switch (msg.what) {
+                case TIMER_TICK:
+                    activity.updateTime();
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void startTimer() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.obtainMessage(TIMER_TICK).sendToTarget();
+            }
+        }, 1000, 1000);
+    }
+
+    private void stopTimer() {
+        timer.cancel();
+        timer = null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +293,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     private void initNewEvent() {
         Event event = new Event();
-        event.setTimestamp(System.currentTimeMillis());
+        eventStartTimeStamp = System.currentTimeMillis();
+        event.setTimestamp(eventStartTimeStamp);
         currentEvent = event;
     }
 
@@ -219,8 +302,10 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         if (mGoogleApiClient != null) {
             mGoogleMap.clear();
         }
+        setSPU();
         initNewEvent();
         startLocationUpdate();
+        startTimer();
         isUpdating = true;
     }
 
@@ -240,6 +325,9 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         currentEvent.save();
 
         stopLocationUpdate();
+        stopTimer();
+        removeSPU();
+
         isUpdating = false;
     }
 
@@ -271,7 +359,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             checkLocationReading(mLastLocation, location);
             mLastLocation = location;//update last location
         }
-
+        updateGPSQuality(location.getAccuracy());
 
     }
 
@@ -311,7 +399,9 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         record.setTimestamp(location.getTime());
         record.setLatitude(location.getLatitude());
         record.setLongitude(location.getLongitude());
-        record.setState(spu.getCurrentState());
+        currentState = spu.getCurrentState();
+        record.setState(currentState);
+        record.setSpeed(currentSpeed);
 
         //update steps and calculate change in steps
         int step = spu.getStepCount();
@@ -346,10 +436,79 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             return;
         }
 
+        //Assume user weight 50kg,c/kg/h=4.5*50*speed(m/s)
+        float dc = 0.00125f * 50 * dV * (dT * 1000);
+
         currentSpeed = dV;
         totalDistance += dD;
+        totalCalories += dc;
 
         updateLocation(currLocation);//store the location\
         updateTrack(currLocation);
+        updateUI();
     }
+
+    private void updateTime() {
+        long dT = System.currentTimeMillis() - eventStartTimeStamp;
+        tvTime.setText(TimeUtil.formatDuration(dT));
+    }
+
+    private void updateGPSQuality(float accuracy) {
+        if (accuracy < 5) {
+            signal1.setImageResource(R.drawable.button_start);
+            signal2.setImageResource(R.drawable.button_start);
+            signal3.setImageResource(R.drawable.button_start);
+            signal4.setImageResource(R.drawable.button_start);
+            signal5.setImageResource(R.drawable.button_start);
+        } else if (accuracy >= 5 && accuracy < 20) {
+            signal1.setImageResource(R.drawable.button_start);
+            signal2.setImageResource(R.drawable.button_start);
+            signal3.setImageResource(R.drawable.button_start);
+            signal4.setImageResource(R.drawable.button_start);
+            signal5.setImageResource(R.drawable.button_lock);
+
+        } else if (accuracy >= 20 && accuracy < 50) {
+            signal1.setImageResource(R.drawable.button_pause);
+            signal2.setImageResource(R.drawable.button_pause);
+            signal3.setImageResource(R.drawable.button_pause);
+            signal4.setImageResource(R.drawable.button_lock);
+            signal5.setImageResource(R.drawable.button_lock);
+
+        } else if (accuracy >= 50 && accuracy < 100) {
+            signal1.setImageResource(R.drawable.button_pause);
+            signal2.setImageResource(R.drawable.button_pause);
+            signal3.setImageResource(R.drawable.button_lock);
+            signal4.setImageResource(R.drawable.button_lock);
+            signal5.setImageResource(R.drawable.button_lock);
+        } else {
+            signal1.setImageResource(R.drawable.button_stop);
+            signal2.setImageResource(R.drawable.button_lock);
+            signal3.setImageResource(R.drawable.button_lock);
+            signal4.setImageResource(R.drawable.button_lock);
+            signal5.setImageResource(R.drawable.button_lock);
+        }
+    }
+
+    private void updateUI() {
+        tvDistance.setText(String.format(String.format("%.1f", totalDistance * 0.001f) + " km"));
+        //convert m/s to km/h
+        tvSpeed.setText(String.format("%.2f", currentSpeed * 3.6f));
+        tvCalorie.setText((int) totalCalories + "");
+
+        switch (currentState) {
+            case Record.STATE_STAND:
+                tvState.setText(standString);
+                break;
+            case Record.STATE_WALK:
+                tvState.setText(walkString);
+                break;
+            case Record.STATE_RUN:
+                tvState.setText(runString);
+                break;
+            default:
+                tvState.setText(standString);
+                break;
+        }
+    }
+
 }

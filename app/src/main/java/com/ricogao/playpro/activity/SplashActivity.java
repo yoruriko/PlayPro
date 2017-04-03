@@ -23,18 +23,18 @@ public class SplashActivity extends AppCompatActivity {
      * Avoid Memory leak in splash Activity
      */
     private static class SplashHandler extends Handler {
-        WeakReference<Activity> activityWeakReference;
+        WeakReference<SplashActivity> activityWeakReference;
 
-        private SplashHandler(Activity activity) {
+        private SplashHandler(SplashActivity activity) {
             activityWeakReference = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Activity activity = activityWeakReference.get();
+            SplashActivity activity = activityWeakReference.get();
             if (msg.what == FORWARD_TO_MAIN && activity != null) {
-                SplashActivity.toMainActivity(activity);
+                activity.toMainActivity(activity);
                 activity.finish();
             }
         }
@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    public static void toMainActivity(Activity activity) {
+    public void toMainActivity(Activity activity) {
         Intent it = new Intent(activity, MainActivity.class);
         activity.startActivity(it);
     }

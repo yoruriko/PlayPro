@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.ricogao.playpro.Adapter.SessionItemAdapter;
 import com.ricogao.playpro.R;
@@ -62,13 +63,7 @@ public class SessionListActivity extends AppCompatActivity implements SessionIte
 
     private void loadData() {
         Subscription loadDataSub = Observable
-                .create(new Observable.OnSubscribe<List<Event>>() {
-                    @Override
-                    public void call(Subscriber<? super List<Event>> subscriber) {
-                        List<Event> events = getAllLocalEvents();
-                        subscriber.onNext(events);
-                    }
-                })
+                .just(getAllLocalEvents())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Event>>() {
@@ -104,7 +99,7 @@ public class SessionListActivity extends AppCompatActivity implements SessionIte
     @Override
     public void onSessionItemClick(long eventId) {
         Intent it = new Intent(SessionListActivity.this, SessionDetailActivity.class);
-        it.putExtra("eventId",eventId);
+        it.putExtra("eventId", eventId);
         startActivity(it);
     }
 }

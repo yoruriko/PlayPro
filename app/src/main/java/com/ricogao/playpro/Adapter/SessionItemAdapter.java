@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.model.Event;
+import com.ricogao.playpro.util.TimeUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -27,7 +28,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     private List<Event> events;
     private SessionItemListener listener;
-    private SimpleDateFormat durationFormat, timestampFormat;
+    private SimpleDateFormat timestampFormat;
 
     public interface SessionItemListener {
         void onSessionItemClick(long eventId);
@@ -54,7 +55,6 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     public SessionItemAdapter(SessionItemListener listener, List<Event> events) {
         this.events = events;
         this.listener = listener;
-        durationFormat = new SimpleDateFormat("HH ':' mm ':' ss");
         timestampFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     }
 
@@ -88,9 +88,9 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
                 listener.onSessionItemClick(event.getId());
             }
         });
-        holder.tv_distance.setText(event.getDistance() + "");
+        holder.tv_distance.setText(String.format("%.2f", event.getDistance() * 0.001f) + " km");
         holder.tv_time.setText(timestampFormat.format(event.getTimestamp()));
-        holder.tv_duration.setText(durationFormat.format(event.getDuration()));
+        holder.tv_duration.setText(TimeUtil.formatDuration(event.getDuration()));
 
     }
 

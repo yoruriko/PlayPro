@@ -32,6 +32,9 @@ public class Record extends BaseModel {
     double longitude;
 
     @Column
+    float speed;
+
+    @Column
     int state;
 
     @Column
@@ -86,6 +89,14 @@ public class Record extends BaseModel {
 
     public long getEventId() {
         return eventId;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public Location getLocation() {

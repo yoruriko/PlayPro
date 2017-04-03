@@ -159,6 +159,7 @@
             android:textColor="@color/font_dark_grey" />
 
         <TextView
+            android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00:00"
@@ -195,34 +196,39 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:text="GPS"
-                android:textSize="@dimen/font_size_small"
-                android:textColor="@color/font_grey" />
+                android:textColor="@color/font_grey"
+                android:textSize="@dimen/font_size_small" />
 
             <ImageView
+                android:id="@+id/signal_1"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="2dp"
                 android:src="@drawable/button_start" />
 
             <ImageView
+                android:id="@+id/signal_2"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="2dp"
                 android:src="@drawable/button_start" />
 
             <ImageView
+                android:id="@+id/signal_3"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="2dp"
                 android:src="@drawable/button_start" />
 
             <ImageView
+                android:id="@+id/signal_4"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="2dp"
                 android:src="@drawable/button_start" />
 
             <ImageView
+                android:id="@+id/signal_5"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginStart="2dp"

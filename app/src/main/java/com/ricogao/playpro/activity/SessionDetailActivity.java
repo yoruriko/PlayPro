@@ -79,14 +79,7 @@ public class SessionDetailActivity extends FragmentActivity implements OnMapRead
 
     private void readData() {
         readDataSub = Observable
-                .create(new Observable.OnSubscribe<Event>() {
-                    @Override
-                    public void call(Subscriber<? super Event> subscriber) {
-                        Event event = readEvent(eventId);
-                        subscriber.onNext(event);
-                        subscriber.onCompleted();
-                    }
-                })
+                .just(readEvent(eventId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnNext(new Action1<Event>() {
