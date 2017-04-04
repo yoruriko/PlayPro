@@ -5,6 +5,7 @@
     <color name="colorAccent">#E0E0E0</color>
 
     <color name="black80">#80000000</color>
+    <color name="black50">#50000000</color>
     <color name="white">#ffffff</color>
 
     <color name="red">#ff0000</color>
@@ -27,5 +28,7 @@
     <color name="background_card">#242327</color>
     <color name="font_grey">#E0E0E0</color>
     <color name="font_dark_grey">#9E9E9E</color>
+    <color name="font_light_grey">#BDBDBD</color>
+    <color name="btn_primary">#6A9890</color>
 
 </resources>

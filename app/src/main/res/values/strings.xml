@@ -8,7 +8,7 @@
     <string name="summary_title">Summary</string>
     <string name="distance">Distance</string>
     <string name="unit_km">Km</string>
-    <string name="time">Time</string>
+    <string name="duration">Duration</string>
 
     <string name="sessions">Sessions</string>
     <string name="start">Start</string>
@@ -21,6 +21,7 @@
     <string name="current_state_title">Current state</string>
     <string name="calorie_title">Calories: cal</string>
     <string name="speed_title">Speed: km/h</string>
+    <string name="distance_title">Distance: km</string>
     <string name="view_sessions">View all sessions</string>
     <string name="stats">Stats</string>
     <string name="personal_best">Personal best</string>
@@ -31,4 +32,9 @@
     <string name="stand">Stand</string>
     <string name="walk">Walk</string>
     <string name="run">Run</string>
+
+    <string name="track">Track</string>
+    <string name="details">Details</string>
+    <string name="chart">Chart</string>
+    <string name="field">Field</string>
 </resources>

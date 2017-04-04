@@ -194,7 +194,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/time"
+                            android:text="@string/duration"
                             android:textColor="@color/font_dark_grey" />
 
                     </LinearLayout>
