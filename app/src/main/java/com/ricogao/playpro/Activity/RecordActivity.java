@@ -83,6 +83,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private float currentSpeed;
     private int lastStepCount;
     private int currentState;
+    private float maxSpeed;
 
     private long eventStartTimeStamp;
 
@@ -320,6 +321,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
         currentEvent.setDuration(records.get(records.size() - 1).getTimestamp() - records.get(0).getTimestamp());
         currentEvent.setDistance(totalDistance);
+        currentEvent.setCalories(totalCalories);
+        currentEvent.setMaxSpeed(maxSpeed);
         currentEvent.setRecords(records);
 
         currentEvent.save();
@@ -434,6 +437,10 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             //drop reading with very large speed
             Log.e(TAG, "Error reading with too large speed");
             return;
+        }
+
+        if (dV > maxSpeed) {
+            maxSpeed = dV;
         }
 
         //Assume user weight 50kg,c/kg/h=4.5*50*speed(m/s)

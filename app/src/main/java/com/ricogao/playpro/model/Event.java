@@ -29,7 +29,13 @@ public class Event extends BaseModel {
     long duration;
 
     @Column
-    double Distance;
+    double distance;
+
+    @Column
+    float maxSpeed;
+
+    @Column
+    float calories;
 
 
     public void setTimestamp(long timestamp) {
@@ -41,7 +47,7 @@ public class Event extends BaseModel {
     }
 
     public void setDistance(double distance) {
-        Distance = distance;
+        distance = distance;
     }
 
     public long getId() {
@@ -57,7 +63,7 @@ public class Event extends BaseModel {
     }
 
     public double getDistance() {
-        return Distance;
+        return distance;
     }
 
     public void setRecords(List<Record> locations) {
@@ -66,6 +72,22 @@ public class Event extends BaseModel {
 
     public List<Record> getRecords() {
         return records;
+    }
+
+    public float getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(float maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public float getCalories() {
+        return calories;
+    }
+
+    public void setCalories(float calories) {
+        this.calories = calories;
     }
 
     @Override

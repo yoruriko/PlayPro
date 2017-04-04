@@ -28,6 +28,7 @@
     <string name="fastest_speed">Fastest speed</string>
     <string name="longest_session">Longest session</string>
     <string name="longest_distance">Longest distance</string>
+    <string name="km">km</string>
 
     <string name="stand">Stand</string>
     <string name="walk">Walk</string>

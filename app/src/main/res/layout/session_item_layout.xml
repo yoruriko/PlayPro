@@ -22,29 +22,44 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_small"
             android:text="2015/11/08 12:14:29"
-            android:textColor="@color/font_grey"
+            android:textColor="@color/font_dark_grey"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tv_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
-            android:text="10:20"
-            android:textColor="@color/font_grey" />
 
         <TextView
             android:id="@+id/tv_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/margin_small"
+            android:text="10.52"
+            android:textColor="@color/font_grey"
+            android:textSize="@dimen/font_size_large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/unit_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_distance"
+            android:layout_toEndOf="@id/tv_distance"
+            android:text="@string/km"
+            android:textAllCaps="true"
+            android:textColor="@color/font_dark_grey"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:text="10 Km"
-            android:textColor="@color/font_grey" />
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_alignBottom="@id/unit_distance"
+            android:text="00:10:20"
+            android:textColor="@color/font_dark_grey"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>
