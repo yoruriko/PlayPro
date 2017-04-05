@@ -430,8 +430,9 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             return;
         }
 
+        float dTs = dT * 0.001f;
         //measure in m/s
-        float dV = dD / (dT * 1000);
+        float dV = dD / dTs;
 
         if (dV > SPEED_LIMIT) {
             //drop reading with very large speed
@@ -444,7 +445,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         }
 
         //Assume user weight 50kg,c/kg/h=4.5*50*speed(m/s)
-        float dc = 0.00125f * 50 * dV * (dT * 1000);
+        //while Velocity=0 assume 1 C/kg/h
+        float dc = (dV != 0) ? (0.00125f * 50 * dV * dTs) : (50 * (dTs / 3600));
 
         currentSpeed = dV;
         totalDistance += dD;

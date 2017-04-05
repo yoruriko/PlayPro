@@ -2,7 +2,6 @@ package com.ricogao.playpro.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,7 +19,6 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.ricogao.playpro.R;
 
-import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Record;
 import com.ricogao.playpro.util.ColouredPolylineTileOverlay;
 import com.ricogao.playpro.util.TimeUtil;
@@ -43,21 +40,16 @@ import rx.schedulers.Schedulers;
  * Created by ricogao on 2017/4/4.
  */
 
-public class TrackFragment extends Fragment implements OnMapReadyCallback {
+public class TrackFragment extends EventFragment implements OnMapReadyCallback {
 
     private final static String TAG = TrackFragment.class.getSimpleName();
 
     private GoogleMap mGoogleMap;
     private Subscription readDataSub;
 
-    private Event event;
-
-    private double distance;
-    private long duration;
     private LatLngBounds.Builder builder;
     private List<Record> records;
     private List<LatLng> latLngs;
-    private CameraUpdate update;
     private List<RecordHolder> holder;
 
     @BindView(R.id.btn_type_track)
@@ -125,9 +117,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         processData();
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
-    }
 
     private void processData() {
 
@@ -140,8 +129,6 @@ public class TrackFragment extends Fragment implements OnMapReadyCallback {
         records = new ArrayList<Record>();
         latLngs = new ArrayList<LatLng>();
         builder = new LatLngBounds.Builder();
-        duration = event.getDuration();
-        distance = event.getDistance();
 
         readDataSub = Observable.from(event.getRecords())
                 .subscribeOn(Schedulers.io())

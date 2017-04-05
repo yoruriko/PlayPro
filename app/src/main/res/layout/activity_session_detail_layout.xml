@@ -14,6 +14,7 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btn_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -24,6 +25,7 @@
             android:textColor="@color/font_grey" />
 
         <Button
+            android:id="@+id/btn_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -34,6 +36,7 @@
             android:textColor="@color/font_dark_grey" />
 
         <Button
+            android:id="@+id/btn_chart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -44,6 +47,7 @@
             android:textColor="@color/font_dark_grey" />
 
         <Button
+            android:id="@+id/btn_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -61,13 +65,14 @@
         android:orientation="horizontal">
 
         <View
+            android:id="@+id/bar_track"
             android:layout_width="0dp"
             android:layout_height="@dimen/conner_radius"
             android:layout_weight="1"
             android:background="@color/btn_primary" />
 
         <View
-
+            android:id="@+id/bar_field"
             android:layout_width="0dp"
             android:layout_height="@dimen/conner_radius"
             android:layout_weight="1"
@@ -75,6 +80,7 @@
             android:visibility="invisible" />
 
         <View
+            android:id="@+id/bar_chart"
             android:layout_width="0dp"
             android:layout_height="@dimen/conner_radius"
             android:layout_weight="1"
@@ -82,6 +88,7 @@
             android:visibility="invisible" />
 
         <View
+            android:id="@+id/bar_detail"
             android:layout_width="0dp"
             android:layout_height="@dimen/conner_radius"
             android:layout_weight="1"
