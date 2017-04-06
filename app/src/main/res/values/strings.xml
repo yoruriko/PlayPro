@@ -38,4 +38,7 @@
     <string name="details">Details</string>
     <string name="chart">Chart</string>
     <string name="field">Field</string>
+
+    <string name="profile_image">Profile Image</string>
+    <string name="user_name">User name</string>
 </resources>

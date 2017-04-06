@@ -2,6 +2,7 @@ package com.ricogao.playpro.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.RadarChart;
@@ -20,7 +22,10 @@ import com.ricogao.playpro.R;
 import com.ricogao.playpro.activity.SessionListActivity;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Event_Table;
+import com.ricogao.playpro.util.CircleTransform;
+import com.ricogao.playpro.util.SharedPreferencesUtil;
 import com.ricogao.playpro.util.TimeUtil;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +66,17 @@ public class MainFragment extends Fragment {
     @BindView(R.id.total_time_tv)
     TextView tvTotalDuration;
 
+    @BindView(R.id.profile_name_tv)
+    TextView tvName;
+
+    @BindView(R.id.profile_img)
+    ImageView imgProfile;
+
+
     private int sessionCount;
     private float totalDistance;
     private long totalDuration;
+    private SharedPreferencesUtil spUtil;
 
     Subscription loadDataSub;
 
@@ -74,6 +87,8 @@ public class MainFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_main_content, container, false);
         ButterKnife.bind(this, view);
+
+        spUtil = new SharedPreferencesUtil(this.getContext());
 
         loadData();
 
@@ -134,6 +149,25 @@ public class MainFragment extends Fragment {
         if (loadDataSub != null && loadDataSub.isUnsubscribed()) {
             loadDataSub.unsubscribe();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        tvName.setText(spUtil.getUsername());
+        showProfileImage();
+    }
+
+    private void showProfileImage() {
+
+        Picasso.with(this.getContext())
+                .load(spUtil.getProfileImageUri())
+                .placeholder(R.drawable.blank_profile)
+                .centerCrop()
+                .fit()
+                .transform(new CircleTransform())
+                .into(imgProfile);
+
     }
 
     private void loadData() {

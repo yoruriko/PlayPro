@@ -221,8 +221,8 @@
                         android:textSize="@dimen/font_size_medium" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/arrow_size"
+                        android:layout_height="@dimen/arrow_size"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/right_arrow"
@@ -307,9 +307,10 @@
 
                     <ImageView
                         android:id="@+id/arrow_fastest_speed"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/arrow_size"
+                        android:layout_height="@dimen/arrow_size"
                         android:layout_alignParentEnd="true"
+                        android:layout_marginStart="@dimen/margin_small"
                         android:layout_centerVertical="true"
                         android:src="@drawable/right_arrow"
                         android:tint="@color/font_grey" />
@@ -321,7 +322,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/arrow_fastest_speed"
                         android:text="12.5 km/h"
-                        android:textColor="@color/font_grey"
+                        android:textColor="@color/btn_primary"
                         android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold" />
 
@@ -356,10 +357,11 @@
 
                     <ImageView
                         android:id="@+id/arrow_longest_session"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/arrow_size"
+                        android:layout_height="@dimen/arrow_size"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_small"
                         android:src="@drawable/right_arrow"
                         android:tint="@color/font_grey" />
 
@@ -370,7 +372,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/arrow_longest_session"
                         android:text="01:33:25"
-                        android:textColor="@color/font_grey"
+                        android:textColor="@color/btn_primary"
                         android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold" />
 
@@ -405,8 +407,9 @@
 
                     <ImageView
                         android:id="@+id/arrow_longest_distance"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/arrow_size"
+                        android:layout_height="@dimen/arrow_size"
+                        android:layout_marginStart="@dimen/margin_small"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/right_arrow"
@@ -419,7 +422,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/arrow_longest_distance"
                         android:text="12.2 km"
-                        android:textColor="@color/font_grey"
+                        android:textColor="@color/btn_primary"
                         android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold" />
 
