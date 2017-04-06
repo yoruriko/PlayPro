@@ -82,4 +82,86 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background_light" />
+
+    <RelativeLayout
+        android:id="@+id/btn_user_weight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_card">
+
+        <TextView
+            android:id="@+id/title_user_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/weight"
+            android:textColor="@color/font_grey" />
+
+        <ImageView
+            android:id="@+id/arrow_user_weight"
+            android:layout_width="@dimen/arrow_size"
+            android:layout_height="@dimen/arrow_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:src="@drawable/right_arrow"
+            android:tint="@color/font_grey" />
+
+        <TextView
+            android:id="@+id/tv_user_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/arrow_user_weight"
+            android:text="50 kg"
+            android:textColor="@color/btn_primary"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background_light" />
+
+    <RelativeLayout
+        android:id="@+id/btn_user_position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_card">
+
+        <TextView
+            android:id="@+id/title_user_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/position"
+            android:textColor="@color/font_grey" />
+
+        <ImageView
+            android:id="@+id/arrow_user_position"
+            android:layout_width="@dimen/arrow_size"
+            android:layout_height="@dimen/arrow_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:src="@drawable/right_arrow"
+            android:tint="@color/font_grey" />
+
+        <TextView
+            android:id="@+id/tv_user_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/arrow_user_position"
+            android:text="Centre Forward"
+            android:textColor="@color/btn_primary"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
 </LinearLayout>

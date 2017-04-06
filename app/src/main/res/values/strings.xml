@@ -41,4 +41,6 @@
 
     <string name="profile_image">Profile Image</string>
     <string name="user_name">User name</string>
+    <string name="weight">Weight</string>
+    <string name="position">Position</string>
 </resources>

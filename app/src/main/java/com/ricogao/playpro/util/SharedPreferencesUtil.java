@@ -3,7 +3,6 @@ package com.ricogao.playpro.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.text.TextUtils;
 
 /**
  * Created by ricogao on 2017/4/5.
@@ -19,6 +18,8 @@ public class SharedPreferencesUtil {
 
     private String tokenName = "user_name";
     private String uriProfileImg = "user_profile_img";
+    private String userWeight = "user_weight";
+    private String userPosition = "user_position";
 
     public SharedPreferencesUtil(Context context) {
         this.context = context;
@@ -43,5 +44,25 @@ public class SharedPreferencesUtil {
 
     public Uri getProfileImageUri() {
         return Uri.parse(sp.getString(uriProfileImg, ""));
+    }
+
+    public void saveUserWeight(float weight) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putFloat(userWeight, weight);
+        editor.apply();
+    }
+
+    public float getUserWeight() {
+        return sp.getFloat(userWeight, 50f);
+    }
+
+    public void saveUserPosition(int positionCode) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(userPosition, positionCode);
+        editor.apply();
+    }
+
+    public Position getPosition() {
+        return Position.getPositionFromCode(sp.getInt(userPosition, 0));
     }
 }

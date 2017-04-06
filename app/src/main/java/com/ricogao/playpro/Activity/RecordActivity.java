@@ -38,6 +38,7 @@ import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Record;
 import com.ricogao.playpro.util.PermissionUtil;
 import com.ricogao.playpro.util.SensorProcessUnit;
+import com.ricogao.playpro.util.SharedPreferencesUtil;
 import com.ricogao.playpro.util.TimeUtil;
 
 import java.lang.ref.WeakReference;
@@ -84,8 +85,10 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private int lastStepCount;
     private int currentState;
     private float maxSpeed;
+    private float weight;
 
     private long eventStartTimeStamp;
+    private SharedPreferencesUtil spUtil;
 
     private Timer timer;
     private TimerHandler mHandler = new TimerHandler(this);
@@ -171,6 +174,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
         setContentView(R.layout.activity_record_layout);
         ButterKnife.bind(this);
+        spUtil = new SharedPreferencesUtil(this);
+        weight = spUtil.getUserWeight();
         initFragment();
 
 
@@ -446,7 +451,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
         //Assume user weight 50kg,c/kg/h=4.5*50*speed(m/s)
         //while Velocity=0 assume 1 C/kg/h
-        float dc = (dV != 0) ? (0.00125f * 50 * dV * dTs) : (50 * (dTs / 3600));
+        float dc = (dV != 0) ? (0.00125f * weight * dV * dTs) : (weight * (dTs / 3600));
 
         currentSpeed = dV;
         totalDistance += dD;

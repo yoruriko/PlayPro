@@ -72,6 +72,9 @@ public class MainFragment extends Fragment {
     @BindView(R.id.profile_img)
     ImageView imgProfile;
 
+    @BindView(R.id.profile_position_tv)
+    TextView tvPosition;
+
 
     private int sessionCount;
     private float totalDistance;
@@ -155,6 +158,7 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         tvName.setText(spUtil.getUsername());
+        tvPosition.setText(spUtil.getPosition().getPositionName());
         showProfileImage();
     }
 

@@ -35,9 +35,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
                     android:layout_toEndOf="@id/profile_img"
                     android:text="@string/profile_name"
+                    android:textSize="@dimen/font_size_medium"
                     android:textColor="@color/font_grey"
                     android:textStyle="bold" />
 
@@ -46,8 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignStart="@id/profile_name_tv"
-                    android:layout_below="@id/profile_name_tv"
                     android:text="@string/profile_position"
+                    android:layout_alignBottom="@id/profile_img"
                     android:textColor="@color/font_dark_grey" />
 
 
