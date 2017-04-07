@@ -45,4 +45,10 @@
     <string name="position">Position</string>
     <string name="speed_chart">Speed chart</string>
     <string name="step_chart">Step chart</string>
+
+    <string name="average_speed_title">Avg speed:km/h</string>
+    <string name="fastest_speed_title">Max speed:km/h</string>
+    <string name="pace_title">Pace: step/min</string>
+    <string name="active_play">Active play</string>
+    <string name="score">Score</string>
 </resources>

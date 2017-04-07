@@ -2,7 +2,7 @@ package com.ricogao.playpro.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -35,7 +35,7 @@ import rx.schedulers.Schedulers;
  * Created by ricogao on 2017/3/19.
  */
 
-public class SessionDetailActivity extends FragmentActivity {
+public class SessionDetailActivity extends AppCompatActivity {
 
     public final static String TAG = SessionDetailActivity.class.getSimpleName();
     private long eventId;
