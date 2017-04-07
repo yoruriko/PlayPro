@@ -43,4 +43,6 @@
     <string name="user_name">User name</string>
     <string name="weight">Weight</string>
     <string name="position">Position</string>
+    <string name="speed_chart">Speed chart</string>
+    <string name="step_chart">Step chart</string>
 </resources>

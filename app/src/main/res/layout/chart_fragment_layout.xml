@@ -1,11 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/background_light">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="chart" />
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_small"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/speed_chart"
+            android:textAlignment="center"
+            android:textColor="@color/font_grey"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/speed_line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_chart_size"
+            android:background="@color/background_card" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/step_chart"
+            android:textAlignment="center"
+            android:textColor="@color/font_grey"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/step_line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_chart_size"
+            android:background="@color/background_card" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/stats"
+            android:textAlignment="center"
+            android:textColor="@color/font_grey"
+            android:textSize="@dimen/font_size_medium"
+            android:textStyle="bold" />
+
+        <com.github.mikephil.charting.charts.RadarChart
+            android:id="@+id/radar_chart"
+            android:layout_width="match_parent"
+            android:background="@color/background_card"
+            android:layout_height="@dimen/radar_chart_size" />
+    </LinearLayout>
+
+</ScrollView>

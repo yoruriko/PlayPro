@@ -142,7 +142,6 @@ public class MainFragment extends Fragment {
         radarChart.setData(data);
         radarChart.getLegend().setTextColor(Color.WHITE);
         radarChart.invalidate();
-        radarChart.animate();
         return view;
     }
 
