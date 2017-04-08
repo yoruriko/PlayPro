@@ -504,7 +504,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void updateUI() {
-        tvDistance.setText(String.format(String.format("%.1f", totalDistance * 0.001f) + " km"));
+        tvDistance.setText(String.format(String.format("%.2f", totalDistance * 0.001f) + " km"));
         //convert m/s to km/h
         tvSpeed.setText(String.format("%.2f", currentSpeed * 3.6f));
         tvCalorie.setText((int) totalCalories + "");

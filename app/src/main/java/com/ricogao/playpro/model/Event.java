@@ -29,7 +29,7 @@ public class Event extends BaseModel {
     long duration;
 
     @Column
-    double distance;
+    float distance;
 
     @Column
     float maxSpeed;
@@ -46,8 +46,8 @@ public class Event extends BaseModel {
         this.duration = duration;
     }
 
-    public void setDistance(double distance) {
-        distance = distance;
+    public void setDistance(float distance) {
+        this.distance = distance;
     }
 
     public long getId() {
@@ -62,7 +62,7 @@ public class Event extends BaseModel {
         return duration;
     }
 
-    public double getDistance() {
+    public float getDistance() {
         return distance;
     }
 

@@ -66,6 +66,13 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
     @BindView(R.id.tv_date)
     TextView tvDate;
 
+    @BindView(R.id.tv_speed_slowest)
+    TextView tvMinSpeed;
+    @BindView(R.id.tv_speed_average)
+    TextView tvAvgSpeed;
+    @BindView(R.id.tv_speed_fastest)
+    TextView tvMaxSpeed;
+
     @OnClick(R.id.btn_type_track)
     void onTypeTrackClick(ImageButton btn) {
         showColouredTitle();
@@ -124,10 +131,12 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
         tvDistance.setText(String.format("%.2f", event.getDistance() * 0.001f));
         tvDate.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(event.getTimestamp()));
 
+        tvMaxSpeed.setText("Fastest: " + String.format("%.2f", event.getMaxSpeed()));
 
-        holder = new ArrayList<RecordHolder>();
-        records = new ArrayList<Record>();
-        latLngs = new ArrayList<LatLng>();
+
+        holder = new ArrayList<>();
+        records = new ArrayList<>();
+        latLngs = new ArrayList<>();
         builder = new LatLngBounds.Builder();
 
         readDataSub = Observable.from(event.getRecords())
