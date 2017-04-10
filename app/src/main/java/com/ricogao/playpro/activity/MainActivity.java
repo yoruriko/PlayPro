@@ -7,9 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.fragment.MainFragment;
 import com.ricogao.playpro.fragment.SettingFragment;
+import com.ricogao.playpro.model.Record;
+
+import java.util.List;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -72,5 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_content, fragment)
                 .commit();
     }
+
 
 }

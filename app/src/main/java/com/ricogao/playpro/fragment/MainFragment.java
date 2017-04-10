@@ -93,9 +93,6 @@ public class MainFragment extends Fragment {
 
         spUtil = new SharedPreferencesUtil(this.getContext());
 
-        loadData();
-
-
         List<Entry> entries = new ArrayList<>();
         entries.add(new Entry(3f, 0));
         entries.add(new Entry(4f, 1));
@@ -156,6 +153,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadData();
         tvName.setText(spUtil.getUsername());
         tvPosition.setText(spUtil.getPosition().getPositionName());
         showProfileImage();
@@ -175,6 +173,7 @@ public class MainFragment extends Fragment {
 
     private void loadData() {
 
+
         loadDataSub = Observable
                 .just(new Select()
                         .from(Event.class)
@@ -186,6 +185,8 @@ public class MainFragment extends Fragment {
                     @Override
                     public void call(List<Event> events) {
                         sessionCount = events.size();
+                        totalDistance = 0;
+                        totalDuration = 0;
                     }
                 })
                 .flatMap(new Func1<List<Event>, Observable<Event>>() {

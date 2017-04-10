@@ -32,9 +32,11 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
 
     public interface SessionItemListener {
         void onSessionItemClick(long eventId);
+
+        void onSessionLongClick(int position);
     }
 
-    public class SessionItemHolder extends RecyclerView.ViewHolder {
+    class SessionItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.cardView)
         CardView cardView;
@@ -45,7 +47,7 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
         @BindView(R.id.tv_duration)
         TextView tv_duration;
 
-        public SessionItemHolder(View itemView) {
+        SessionItemHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -74,18 +76,27 @@ public class SessionItemAdapter extends RecyclerView.Adapter<SessionItemAdapter.
     public SessionItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.session_item_layout, parent, false);
-        SessionItemHolder holder = new SessionItemHolder(view);
-        return holder;
+        return new SessionItemHolder(view);
     }
 
     @Override
     public void onBindViewHolder(SessionItemHolder holder, int position) {
         final Event event = events.get(position);
+        final int pos = position;
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSessionItemClick(event.getId());
+                if (listener != null)
+                    listener.onSessionItemClick(event.getId());
+            }
+        });
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (listener != null)
+                    listener.onSessionLongClick(pos);
+                return false;
             }
         });
         holder.tv_distance.setText(String.format("%.2f", event.getDistance() * 0.001f) + " km");

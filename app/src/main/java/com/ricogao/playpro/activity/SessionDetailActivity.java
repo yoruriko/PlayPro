@@ -1,9 +1,14 @@
 package com.ricogao.playpro.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.raizlabs.android.dbflow.sql.language.Condition;
@@ -19,6 +24,7 @@ import com.ricogao.playpro.model.Event_Table;
 import com.ricogao.playpro.model.Record;
 
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,11 +72,14 @@ public class SessionDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_field)
     void onFieldClick() {
-        if (fieldFragment == null) {
-            fieldFragment = new FieldFragment();
-            fieldFragment.setEvent(currentEvent);
-        }
-        switchFragment(fieldFragment);
+//        if (fieldFragment == null) {
+//            fieldFragment = new FieldFragment();
+//            fieldFragment.setEvent(currentEvent);
+//        }
+//        switchFragment(fieldFragment);
+        Intent it = new Intent(this, FieldListActivity.class);
+        it.putExtra("eventId", eventId);
+        startActivity(it);
 
         barTrack.setVisibility(View.INVISIBLE);
         barField.setVisibility(View.VISIBLE);
@@ -112,10 +121,48 @@ public class SessionDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_session_detail_layout);
         ButterKnife.bind(this);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Session");
+        }
+
         trackFragment = new TrackFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, trackFragment).commit();
         eventId = getIntent().getLongExtra("eventId", 0);
         readData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.delete_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.action_delete:
+                new AlertDialog.Builder(this)
+                        .setTitle("Are you sure to delete this session?")
+                        .setPositiveButton("delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteEvent();
+                                SessionDetailActivity.this.finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteEvent() {
+        currentEvent.delete();
     }
 
 
@@ -149,6 +196,7 @@ public class SessionDetailActivity extends AppCompatActivity {
                     @Override
                     public void call(Event event) {
                         currentEvent = event;
+                        event.loadAssociatedField();
                     }
                 })
                 .map(new Func1<Event, List<Record>>() {

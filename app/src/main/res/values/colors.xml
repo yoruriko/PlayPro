@@ -31,4 +31,6 @@
     <color name="font_light_grey">#BDBDBD</color>
     <color name="btn_primary">#6A9890</color>
 
+    <color name="blue50">#500000ff</color>
+
 </resources>

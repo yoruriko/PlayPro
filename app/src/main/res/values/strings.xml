@@ -51,4 +51,6 @@
     <string name="pace_title">Pace: step/min</string>
     <string name="active_play">Active play</string>
     <string name="score">Score</string>
+    <string name="recording">Recording</string>
+    <string name="field_hint">Enter field name here</string>
 </resources>

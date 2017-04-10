@@ -2,6 +2,7 @@ package com.ricogao.playpro.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,13 +96,20 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private TimerHandler mHandler = new TimerHandler(this);
 
     @OnClick(R.id.btn_start)
-    protected void onStartClick() {
-        startRecording();
+    protected void onStartClick(Button btn) {
+        if (!isUpdating) {
+            btn.setBackgroundResource(R.drawable.button_pause);
+            btn.setText(R.string.recording);
+            btn.setEnabled(false);
+            startRecording();
+        }
     }
 
     @OnClick(R.id.btn_finish)
     protected void onFinishClick() {
-        stopRecording();
+        if (isUpdating) {
+            stopRecording();
+        }
     }
 
     @BindString(R.string.stand)
@@ -337,6 +346,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         removeSPU();
 
         isUpdating = false;
+        onRecordFinish();
     }
 
 
@@ -525,4 +535,30 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
+
+    private void onRecordFinish() {
+        new AlertDialog.Builder(this)
+                .setTitle("Do you want to associate field with this session now?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent it = new Intent(RecordActivity.this, FieldListActivity.class);
+                        it.putExtra("eventId", currentEvent.getId());
+                        it.putExtra("isFromRecord", true);
+                        startActivity(it);
+                        RecordActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent it = new Intent(RecordActivity.this, SessionDetailActivity.class);
+                        it.putExtra("eventId", currentEvent.getId());
+                        startActivity(it);
+                        RecordActivity.this.finish();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+    }
 }

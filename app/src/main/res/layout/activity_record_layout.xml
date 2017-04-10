@@ -29,7 +29,7 @@
             android:layout_height="@dimen/button_size_large"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/button_pause"
+            android:background="@drawable/button_start"
             android:elevation="@dimen/btn_elevation"
             android:text="@string/start"
             android:textColor="@color/font_grey" />

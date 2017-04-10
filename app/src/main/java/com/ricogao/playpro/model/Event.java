@@ -1,5 +1,6 @@
 package com.ricogao.playpro.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -16,11 +17,15 @@ import java.util.List;
 @Table(database = MyDatabase.class)
 public class Event extends BaseModel {
 
-    List<Record> records;
+    private List<Record> records;
+    private Field field;
 
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
+
+    @Column
+    long fieldId = -1;
 
     @Column
     long timestamp;
@@ -37,6 +42,13 @@ public class Event extends BaseModel {
     @Column
     float calories;
 
+    public long getFieldId() {
+        return fieldId;
+    }
+
+    public void setFieldId(long fieldId) {
+        this.fieldId = fieldId;
+    }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
@@ -90,6 +102,14 @@ public class Event extends BaseModel {
         this.calories = calories;
     }
 
+    public void setField(Field field) {
+        this.field = field;
+    }
+
+    public Field getField() {
+        return field;
+    }
+
     @Override
     public void save() {
         super.save();
@@ -100,6 +120,22 @@ public class Event extends BaseModel {
             }
         }
 
+        if (this.field != null) {
+            field.save();
+        }
+
+    }
+
+    @Override
+    public void delete() {
+        if (records == null) {
+            loadAssociatedRecords();
+        }
+        for (Record r : records) {
+            r.delete();
+        }
+
+        super.delete();
     }
 
     public List<Record> loadAssociatedRecords() {
@@ -109,5 +145,18 @@ public class Event extends BaseModel {
                 .orderBy(Record_Table.timestamp.getNameAlias(), true)
                 .queryList();
         return records;
+    }
+
+    public Field loadAssociatedField() {
+        if (fieldId == -1) {
+            return null;
+        }
+
+        this.field = new Select()
+                .from(Field.class)
+                .where(Condition.column(Field_Table.id.getNameAlias()).eq(fieldId))
+                .querySingle();
+
+        return field;
     }
 }
