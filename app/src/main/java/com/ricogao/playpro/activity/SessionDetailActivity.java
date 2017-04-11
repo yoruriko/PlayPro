@@ -72,11 +72,11 @@ public class SessionDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_field)
     void onFieldClick() {
-//        if (fieldFragment == null) {
-//            fieldFragment = new FieldFragment();
-//            fieldFragment.setEvent(currentEvent);
-//        }
-//        switchFragment(fieldFragment);
+        if (fieldFragment == null) {
+            fieldFragment = new FieldFragment();
+            fieldFragment.setEvent(currentEvent);
+        }
+        switchFragment(fieldFragment);
         Intent it = new Intent(this, FieldListActivity.class);
         it.putExtra("eventId", eventId);
         startActivity(it);
@@ -129,13 +129,18 @@ public class SessionDetailActivity extends AppCompatActivity {
         trackFragment = new TrackFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, trackFragment).commit();
         eventId = getIntent().getLongExtra("eventId", 0);
-        readData();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.delete_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        readData();
     }
 
     @Override

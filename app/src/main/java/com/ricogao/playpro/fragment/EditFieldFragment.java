@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +26,7 @@ import com.ricogao.playpro.R;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Field;
 import com.ricogao.playpro.model.Record;
+import com.ricogao.playpro.util.PolygonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.List;
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -62,10 +65,22 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
     private Event event;
     private boolean isNewField;
 
+    private PolygonUtils polygonUtils;
+
+
+    private int insideCount, centreCount, fontCount, backCount;
+
+    private List<LatLng> centreBound, fontBound, backBound;
+
     @BindColor(R.color.blue50)
     int blue50;
     @BindView(R.id.edt_name)
     EditText edtName;
+
+    @OnClick(R.id.btn_test)
+    void onTestClick() {
+        runAnalysis();
+    }
 
     @Nullable
     @Override
@@ -73,6 +88,7 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
         View view = inflater.inflate(R.layout.edit_field_fragment_layout, container, false);
         ButterKnife.bind(this, view);
         initView();
+        polygonUtils = new PolygonUtils();
         return view;
     }
 
@@ -156,6 +172,7 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
                 });
     }
 
+
     private void showTrack(List<LatLng> track) {
         mGoogleMap.addPolyline(new PolylineOptions().addAll(track).width(5).color(Color.RED).geodesic(true));
     }
@@ -166,6 +183,89 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
         } else {
             showBounds(currentField.getBound());
         }
+    }
+
+    private void runAnalysis() {
+
+        getCentreBound();
+        getFontBackBound();
+
+        mGoogleMap.addPolygon(new PolygonOptions().addAll(centreBound).strokeColor(Color.RED).fillColor(Color.RED).geodesic(true));
+        mGoogleMap.addPolygon(new PolygonOptions().addAll(fontBound).strokeColor(Color.YELLOW).fillColor(Color.YELLOW).geodesic(true));
+        mGoogleMap.addPolygon(new PolygonOptions().addAll(backBound).strokeColor(Color.GREEN).fillColor(Color.GREEN).geodesic(true));
+
+        subscription = Observable.from(event.getRecords())
+                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<Record, LatLng>() {
+                    @Override
+                    public LatLng call(Record record) {
+                        return new LatLng(record.getLatitude(), record.getLongitude());
+                    }
+                })
+                .subscribe(new Subscriber<LatLng>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.i(TAG, "Inside:" + insideCount + ", Centre:" + centreCount + ", Wing:" + (insideCount - centreCount) + ", font:" + fontCount + ", back:" + backCount + " , centre:" + (insideCount - fontCount - backCount));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(LatLng latLng) {
+                        checkPosition(latLng);
+                    }
+                });
+    }
+
+    private void checkPosition(LatLng data) {
+        if (polygonUtils.isInsidePolygon(data, currentBounds)) {
+            insideCount++;
+            if (polygonUtils.isInsidePolygon(data, centreBound)) {
+                centreCount++;
+            }
+            if (polygonUtils.isInsidePolygon(data, fontBound)) {
+                fontCount++;
+            }
+            if (polygonUtils.isInsidePolygon(data, backBound)) {
+                backCount++;
+            }
+        }
+    }
+
+    private void getCentreBound() {
+        double dTopLat = .3f * (currentBounds.get(1).latitude - currentBounds.get(0).latitude);
+        double dTopLng = .3f * (currentBounds.get(1).longitude - currentBounds.get(0).longitude);
+        double dBotLat = .3f * (currentBounds.get(2).latitude - currentBounds.get(3).latitude);
+        double dBotLng = .3f * (currentBounds.get(2).longitude - currentBounds.get(3).longitude);
+
+        centreBound = new ArrayList<>();
+        centreBound.add(new LatLng(currentBounds.get(0).latitude + dTopLat, currentBounds.get(0).longitude + dTopLng));
+        centreBound.add(new LatLng(currentBounds.get(1).latitude - dTopLat, currentBounds.get(1).longitude - dTopLng));
+        centreBound.add(new LatLng(currentBounds.get(2).latitude - dBotLat, currentBounds.get(2).longitude - dBotLng));
+        centreBound.add(new LatLng(currentBounds.get(3).latitude + dBotLat, currentBounds.get(3).longitude + dBotLng));
+    }
+
+    private void getFontBackBound() {
+        double dLeftLat = .3f * (currentBounds.get(3).latitude - currentBounds.get(0).latitude);
+        double dLeftLng = .3f * (currentBounds.get(3).longitude - currentBounds.get(0).longitude);
+        double dRightLat = .3f * (currentBounds.get(2).latitude - currentBounds.get(1).latitude);
+        double dRightLng = .3f * (currentBounds.get(2).longitude - currentBounds.get(1).longitude);
+
+        fontBound = new ArrayList<>();
+        fontBound.add(currentBounds.get(0));
+        fontBound.add(currentBounds.get(1));
+        fontBound.add(new LatLng(currentBounds.get(1).latitude + dRightLat, currentBounds.get(1).longitude + dRightLng));
+        fontBound.add(new LatLng(currentBounds.get(0).latitude + dLeftLat, currentBounds.get(0).longitude + dLeftLng));
+
+        backBound = new ArrayList<>();
+        backBound.add(new LatLng(currentBounds.get(3).latitude - dLeftLat, currentBounds.get(3).longitude - dLeftLng));
+        backBound.add(new LatLng(currentBounds.get(2).latitude - dRightLat, currentBounds.get(2).longitude - dRightLng));
+        backBound.add(currentBounds.get(2));
+        backBound.add(currentBounds.get(3));
     }
 
     private void showBounds(List<LatLng> bound) {
@@ -208,7 +308,6 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
 
         double dLat = p3.latitude - p2.latitude;
         double dLng = p3.longitude - p2.longitude;
-
         LatLng p4 = new LatLng(p1.latitude + dLat, p1.longitude + dLng);
 
         currentBounds.set(0, p1);

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_light"
     android:orientation="vertical">
 
     <EditText
@@ -14,6 +15,12 @@
         android:textAlignment="center"
         android:textColor="@color/font_grey"
         android:textColorHint="@color/font_dark_grey" />
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test" />
 
     <fragment
         android:id="@+id/map"

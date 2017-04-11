@@ -63,8 +63,6 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
 
     @BindView(R.id.btn_type_track)
     ImageButton btnTypeTrack;
-    @BindView(R.id.btn_type_sate)
-    ImageButton btnTypeSate;
     @BindView(R.id.btn_type_heatmap)
     ImageButton btnTypeHeatmap;
 
@@ -88,22 +86,12 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
     void onTypeTrackClick(ImageButton btn) {
         showColouredTitle();
         btnTypeHeatmap.setSelected(false);
-        btnTypeSate.setSelected(false);
     }
 
 
     @OnClick(R.id.btn_type_heatmap)
     void onTypeHeatmapClick(ImageButton btn) {
         showHeatMap();
-        btnTypeTrack.setSelected(false);
-        btnTypeSate.setSelected(false);
-    }
-
-
-    @OnClick(R.id.btn_type_sate)
-    void onTypeStateClick(ImageButton btn) {
-        btn.setSelected(true);
-        btnTypeHeatmap.setSelected(false);
         btnTypeTrack.setSelected(false);
     }
 
