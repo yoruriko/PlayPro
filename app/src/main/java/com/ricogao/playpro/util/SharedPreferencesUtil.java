@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+import com.google.android.gms.location.LocationRequest;
+
 /**
  * Created by ricogao on 2017/4/5.
  */
@@ -20,6 +22,9 @@ public class SharedPreferencesUtil {
     private String uriProfileImg = "user_profile_img";
     private String userWeight = "user_weight";
     private String userPosition = "user_position";
+
+    private String gpsInterval = "gps_interval";
+    private String gpsAccuracy = "gps_accuracy";
 
     public SharedPreferencesUtil(Context context) {
         this.context = context;
@@ -64,5 +69,25 @@ public class SharedPreferencesUtil {
 
     public Position getPosition() {
         return Position.getPositionFromCode(sp.getInt(userPosition, 0));
+    }
+
+    public void saveGpsInterval(long interval) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putLong(gpsInterval, interval);
+        editor.apply();
+    }
+
+    public long getGpsInterval() {
+        return sp.getLong(gpsInterval, 1000);
+    }
+
+    public void saveGpsAccuracy(int accuracy) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(gpsAccuracy, accuracy);
+        editor.apply();
+    }
+
+    public int getGpsAccuracy() {
+        return sp.getInt(gpsAccuracy, LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 }

@@ -56,8 +56,13 @@ public class DetailFragment extends EventFragment {
         View view = inflater.inflate(R.layout.detail_fragment_layout, container, false);
         ButterKnife.bind(this, view);
         spUtil = new SharedPreferencesUtil(this.getContext());
-        initView();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initView();
     }
 
     private void initView() {
@@ -73,10 +78,12 @@ public class DetailFragment extends EventFragment {
         tvMaxSpeed.setText(String.format("%.2f", event.getMaxSpeed() * 3.6f));
 
         tvCalorie.setText(String.format("%.1f", event.getCalories()));
-        tvPace.setText(String.format("%.1f", event.getAnalysis().getStepPace()));
+        if (event.getAnalysis() != null) {
+            tvPace.setText(String.format("%.1f", event.getAnalysis().getStepPace()));
 
-        tvActivePlay.setText(String.format("%.1f", event.getAnalysis().getActiveScore() * 10f) + "%");
-        tvScore.setText(String.format("%.1f", event.getAnalysis().getScore()));
+            tvActivePlay.setText(String.format("%.1f", event.getAnalysis().getActiveScore() * 10f) + "%");
+            tvScore.setText(String.format("%.1f", event.getAnalysis().getScore()));
+        }
     }
 
     private void showProfileImage() {

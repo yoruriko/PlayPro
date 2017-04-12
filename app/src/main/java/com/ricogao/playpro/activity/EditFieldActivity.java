@@ -79,7 +79,6 @@ public class EditFieldActivity extends AppCompatActivity implements EditFieldFra
                 return true;
             case R.id.action_save:
                 dialog=ProgressDialog.show(this,"Saving Field","Saving field and analysis data...",true,false);
-                dialog.show();
                 editFieldFragment.saveField();
                 return true;
         }

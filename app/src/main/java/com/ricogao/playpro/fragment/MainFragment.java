@@ -20,6 +20,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.activity.SessionDetailActivity;
 import com.ricogao.playpro.activity.SessionListActivity;
+import com.ricogao.playpro.model.Analysis;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Event_Table;
 import com.ricogao.playpro.util.CircleTransform;
@@ -41,6 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by ricogao on 2017/4/5.
@@ -113,34 +115,70 @@ public class MainFragment extends Fragment {
 
     private long longestDuration;
     private float fastestSpeed, longestDistance;
+    private float topSpeedScore, avgSpeedScore, staminaScore, positionScore, activeScore, workRateScore;
 
-    Subscription loadDataSub;
+    private CompositeSubscription loadDataSub;
+    private List<Analysis> analysises;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        loadDataSub = new CompositeSubscription();
 
         View view = inflater.inflate(R.layout.activity_main_content, container, false);
         ButterKnife.bind(this, view);
 
         spUtil = new SharedPreferencesUtil(this.getContext());
+        return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (loadDataSub != null && loadDataSub.isUnsubscribed()) {
+            loadDataSub.unsubscribe();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+        loadAnalysis();
+        tvName.setText(spUtil.getUsername());
+        tvPosition.setText(spUtil.getPosition().getPositionName());
+        showProfileImage();
+    }
+
+    private void showProfileImage() {
+
+        Picasso.with(this.getContext())
+                .load(spUtil.getProfileImageUri())
+                .placeholder(R.drawable.blank_profile)
+                .centerCrop()
+                .fit()
+                .transform(new CircleTransform())
+                .into(imgProfile);
+
+    }
+
+    private void showRadarChart() {
 
         List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(3f, 0));
-        entries.add(new Entry(4f, 1));
-        entries.add(new Entry(7f, 2));
-        entries.add(new Entry(8f, 3));
-        entries.add(new Entry(2f, 4));
-        entries.add(new Entry(5f, 5));
+        entries.add(new Entry(analysises.get(0).getTopSpeedScore(), 0));
+        entries.add(new Entry(analysises.get(0).getAvgSpeedScore(), 1));
+        entries.add(new Entry(analysises.get(0).getStaminaScore(), 2));
+        entries.add(new Entry(analysises.get(0).getActiveScore(), 3));
+        entries.add(new Entry(analysises.get(0).getPositionScore(), 4));
+        entries.add(new Entry(analysises.get(0).getWorkRateScore(), 5));
 
         List<Entry> entries2 = new ArrayList<>();
-        entries2.add(new Entry(4f, 0));
-        entries2.add(new Entry(6f, 1));
-        entries2.add(new Entry(5f, 2));
-        entries2.add(new Entry(6f, 3));
-        entries2.add(new Entry(4f, 4));
-        entries2.add(new Entry(5f, 5));
+        entries2.add(new Entry(topSpeedScore / (float) analysises.size(), 0));
+        entries2.add(new Entry(avgSpeedScore / (float) analysises.size(), 1));
+        entries2.add(new Entry(staminaScore / (float) analysises.size(), 2));
+        entries2.add(new Entry(activeScore / (float) analysises.size(), 3));
+        entries2.add(new Entry(positionScore / (float) analysises.size(), 4));
+        entries2.add(new Entry(workRateScore / (float) analysises.size(), 5));
 
         RadarDataSet dataSet = new RadarDataSet(entries, "Last session");
         dataSet.setValueTextColor(Color.WHITE);
@@ -172,42 +210,65 @@ public class MainFragment extends Fragment {
         radarChart.setData(data);
         radarChart.getLegend().setTextColor(Color.WHITE);
         radarChart.invalidate();
-        return view;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (loadDataSub != null && loadDataSub.isUnsubscribed()) {
-            loadDataSub.unsubscribe();
-        }
-    }
+    private void loadAnalysis() {
+        analysises = new ArrayList<>();
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadData();
-        tvName.setText(spUtil.getUsername());
-        tvPosition.setText(spUtil.getPosition().getPositionName());
-        showProfileImage();
-    }
+        Subscription subscription = Observable
+                .just(new Select()
+                        .from(Analysis.class)
+                        .queryList())
+                .doOnNext(new Action1<List<Analysis>>() {
+                              @Override
+                              public void call(List<Analysis> list) {
+                                  analysises = list;
+                                  topSpeedScore = 0;
+                                  avgSpeedScore = 0;
+                                  staminaScore = 0;
+                                  activeScore = 0;
+                                  positionScore = 0;
+                                  workRateScore = 0;
+                              }
+                          }
+                )
+                .flatMap(new Func1<List<Analysis>, Observable<Analysis>>() {
+                    @Override
+                    public Observable<Analysis> call(List<Analysis> analysises) {
+                        return Observable.from(analysises);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Analysis>() {
+                    @Override
+                    public void onCompleted() {
+                        if (analysises.size() > 0) {
+                            showRadarChart();
+                        }
+                    }
 
-    private void showProfileImage() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
 
-        Picasso.with(this.getContext())
-                .load(spUtil.getProfileImageUri())
-                .placeholder(R.drawable.blank_profile)
-                .centerCrop()
-                .fit()
-                .transform(new CircleTransform())
-                .into(imgProfile);
-
+                    @Override
+                    public void onNext(Analysis analysis) {
+                        topSpeedScore += analysis.getTopSpeedScore();
+                        avgSpeedScore += analysis.getAvgSpeedScore();
+                        staminaScore += analysis.getStaminaScore();
+                        workRateScore += analysis.getWorkRateScore();
+                        positionScore += analysis.getPositionScore();
+                        activeScore += analysis.getActiveScore();
+                    }
+                });
+        loadDataSub.add(subscription);
     }
 
     private void loadData() {
 
-
-        loadDataSub = Observable
+        Subscription subscription = Observable
                 .just(new Select()
                         .from(Event.class)
                         .orderBy(Event_Table.timestamp.getNameAlias(), false)
@@ -228,6 +289,12 @@ public class MainFragment extends Fragment {
                         return Observable.from(events);
                     }
                 })
+                .doOnNext(new Action1<Event>() {
+                    @Override
+                    public void call(Event event) {
+                        event.loadAssociatedAnalysis();
+                    }
+                })
                 .subscribe(new Subscriber<Event>() {
                     @Override
                     public void onCompleted() {
@@ -243,7 +310,6 @@ public class MainFragment extends Fragment {
                     public void onNext(Event event) {
                         totalDistance += event.getDistance();
                         totalDuration += event.getDuration();
-
                         if (event.getMaxSpeed() > fastestSpeed) {
                             fastestSpeed = event.getMaxSpeed();
                             fastestSpeedEvent = event;
@@ -260,6 +326,8 @@ public class MainFragment extends Fragment {
                         }
                     }
                 });
+
+        loadDataSub.add(subscription);
     }
 
     private void showData() {
@@ -267,13 +335,15 @@ public class MainFragment extends Fragment {
         tvTotalDistance.setText(String.format("%.2f", totalDistance * 0.001f) + " km");
         tvTotalDuration.setText(TimeUtil.formatHour(totalDuration) + " h");
 
-        tvDateFastestSpeed.setText(new SimpleDateFormat("yyyy/MM/dd").format(fastestSpeedEvent.getTimestamp()));
-        tvDateLongestDistance.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDistanceEvent.getTimestamp()));
-        tvDateLongestDuration.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDurationEvent.getTimestamp()));
+        if (fastestSpeedEvent != null) {
+            tvDateFastestSpeed.setText(new SimpleDateFormat("yyyy/MM/dd").format(fastestSpeedEvent.getTimestamp()));
+            tvDateLongestDistance.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDistanceEvent.getTimestamp()));
+            tvDateLongestDuration.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDurationEvent.getTimestamp()));
 
-        tvFastestSpeed.setText(String.format("%.2f", fastestSpeed * 3.6f) + " km/h");
-        tvLongestDistance.setText(String.format("%.2f", longestDistance * 0.001f) + " km");
-        tvLongestDuration.setText(TimeUtil.formatDuration(longestDuration));
+            tvFastestSpeed.setText(String.format("%.2f", fastestSpeed * 3.6f) + " km/h");
+            tvLongestDistance.setText(String.format("%.2f", longestDistance * 0.001f) + " km");
+            tvLongestDuration.setText(TimeUtil.formatDuration(longestDuration));
+        }
     }
 
     private void startEvent(long eventId) {

@@ -5,11 +5,17 @@
     android:background="@color/background_light"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:text="@string/user_setting"
+        android:textColor="@color/font_dark_grey" />
+
     <RelativeLayout
         android:id="@+id/btn_profile_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
         android:background="@color/background_card">
 
         <TextView
@@ -164,4 +170,86 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:text="@string/system_setting"
+        android:textColor="@color/font_dark_grey" />
+
+    <RelativeLayout
+        android:id="@+id/btn_gps_interval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_card">
+
+        <TextView
+            android:id="@+id/title_gps_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/gps_update_interval"
+            android:textColor="@color/font_grey" />
+
+        <ImageView
+            android:id="@+id/arrow_gps_interval"
+            android:layout_width="@dimen/arrow_size"
+            android:layout_height="@dimen/arrow_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:src="@drawable/right_arrow"
+            android:tint="@color/font_grey" />
+
+        <TextView
+            android:id="@+id/tv_gps_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/arrow_gps_interval"
+            android:text="1000 ms"
+            android:textColor="@color/btn_primary"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/background_light" />
+    <RelativeLayout
+        android:id="@+id/btn_gps_accuracy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_card">
+
+        <TextView
+            android:id="@+id/title_gps_accuracy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/gps_update_accuracy"
+            android:textColor="@color/font_grey" />
+
+        <ImageView
+            android:id="@+id/arrow_gps_accuracy"
+            android:layout_width="@dimen/arrow_size"
+            android:layout_height="@dimen/arrow_size"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_small"
+            android:src="@drawable/right_arrow"
+            android:tint="@color/font_grey" />
+
+        <TextView
+            android:id="@+id/tv_gps_accuracy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/arrow_gps_accuracy"
+            android:text="High Accuracy"
+            android:textColor="@color/btn_primary"
+            android:textStyle="bold" />
+    </RelativeLayout>
 </LinearLayout>

@@ -285,7 +285,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="0"
+                android:text="-"
                 android:textColor="@color/font_grey"
                 android:textSize="@dimen/font_size_large"
                 android:textStyle="bold" />
@@ -327,7 +327,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="0.0%"
+                android:text="-"
                 android:textColor="@color/font_grey"
                 android:textSize="@dimen/font_size_large"
                 android:textStyle="bold" />

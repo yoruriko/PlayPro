@@ -1,15 +1,14 @@
 package com.ricogao.playpro.activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -21,20 +20,14 @@ import com.ricogao.playpro.fragment.FieldFragment;
 import com.ricogao.playpro.fragment.TrackFragment;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Event_Table;
-import com.ricogao.playpro.model.Record;
 
-
-import java.text.SimpleDateFormat;
-import java.util.List;
-
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -50,6 +43,11 @@ public class SessionDetailActivity extends AppCompatActivity {
 
     private Event currentEvent;
 
+    @BindColor(R.color.font_grey)
+    int fontGrey;
+    @BindColor(R.color.font_dark_grey)
+    int fontDarkGrey;
+
     @BindView(R.id.bar_track)
     View barTrack;
     @BindView(R.id.bar_field)
@@ -59,6 +57,16 @@ public class SessionDetailActivity extends AppCompatActivity {
     @BindView(R.id.bar_detail)
     View barDetail;
 
+    @BindView(R.id.btn_track)
+    Button btnTrack;
+    @BindView(R.id.btn_field)
+    Button btnField;
+    @BindView(R.id.btn_chart)
+    Button btnChart;
+    @BindView(R.id.btn_details)
+    Button btnDetail;
+
+
     @OnClick(R.id.btn_track)
     void onTrackClick() {
         switchFragment(trackFragment);
@@ -67,6 +75,11 @@ public class SessionDetailActivity extends AppCompatActivity {
         barField.setVisibility(View.INVISIBLE);
         barChart.setVisibility(View.INVISIBLE);
         barDetail.setVisibility(View.INVISIBLE);
+
+        btnTrack.setTextColor(fontGrey);
+        btnField.setTextColor(fontDarkGrey);
+        btnChart.setTextColor(fontDarkGrey);
+        btnDetail.setTextColor(fontDarkGrey);
     }
 
 
@@ -74,46 +87,57 @@ public class SessionDetailActivity extends AppCompatActivity {
     void onFieldClick() {
         if (fieldFragment == null) {
             fieldFragment = new FieldFragment();
-            fieldFragment.setEvent(currentEvent);
         }
+        fieldFragment.setEvent(currentEvent);
         switchFragment(fieldFragment);
-        Intent it = new Intent(this, FieldListActivity.class);
-        it.putExtra("eventId", eventId);
-        startActivity(it);
 
         barTrack.setVisibility(View.INVISIBLE);
         barField.setVisibility(View.VISIBLE);
         barChart.setVisibility(View.INVISIBLE);
         barDetail.setVisibility(View.INVISIBLE);
+
+        btnTrack.setTextColor(fontDarkGrey);
+        btnField.setTextColor(fontGrey);
+        btnChart.setTextColor(fontDarkGrey);
+        btnDetail.setTextColor(fontDarkGrey);
     }
 
     @OnClick(R.id.btn_chart)
     void onChartClick() {
         if (chartFragment == null) {
             chartFragment = new ChartFragment();
-            chartFragment.setEvent(currentEvent);
         }
-
+        chartFragment.setEvent(currentEvent);
         switchFragment(chartFragment);
 
         barTrack.setVisibility(View.INVISIBLE);
         barField.setVisibility(View.INVISIBLE);
         barChart.setVisibility(View.VISIBLE);
         barDetail.setVisibility(View.INVISIBLE);
+
+        btnTrack.setTextColor(fontDarkGrey);
+        btnField.setTextColor(fontDarkGrey);
+        btnChart.setTextColor(fontGrey);
+        btnDetail.setTextColor(fontDarkGrey);
     }
 
     @OnClick(R.id.btn_details)
     void onDetailClick() {
         if (detailFragment == null) {
             detailFragment = new DetailFragment();
-            detailFragment.setEvent(currentEvent);
         }
+        detailFragment.setEvent(currentEvent);
         switchFragment(detailFragment);
 
         barTrack.setVisibility(View.INVISIBLE);
         barField.setVisibility(View.INVISIBLE);
         barChart.setVisibility(View.INVISIBLE);
         barDetail.setVisibility(View.VISIBLE);
+
+        btnTrack.setTextColor(fontDarkGrey);
+        btnField.setTextColor(fontDarkGrey);
+        btnChart.setTextColor(fontDarkGrey);
+        btnDetail.setTextColor(fontGrey);
     }
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,10 +149,10 @@ public class SessionDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Session");
         }
-
+        eventId = getIntent().getLongExtra("eventId", 0);
         trackFragment = new TrackFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, trackFragment).commit();
-        eventId = getIntent().getLongExtra("eventId", 0);
+
     }
 
     @Override

@@ -248,4 +248,24 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         tools:context="com.ricogao.playpro.activity.RecordActivity" />
+
+
+    <FrameLayout
+        android:clickable="true"
+        android:id="@+id/lock_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black80"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_unlock"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:background="@drawable/button_lock"
+            android:src="@drawable/ic_unlock"
+            android:tint="@color/font_grey" />
+
+    </FrameLayout>
 </RelativeLayout>

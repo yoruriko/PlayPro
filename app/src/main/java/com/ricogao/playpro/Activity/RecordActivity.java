@@ -1,6 +1,7 @@
 package com.ricogao.playpro.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,7 +17,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +98,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     private Timer timer;
     private TimerHandler mHandler = new TimerHandler(this);
 
+    private ProgressDialog dialog;
+
     @OnClick(R.id.btn_start)
     protected void onStartClick(Button btn) {
         if (!isUpdating) {
@@ -111,6 +116,21 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
             stopRecording();
         }
     }
+
+    @OnClick(R.id.btn_lock)
+    void onLockClick() {
+        if (isUpdating) {
+            lockLayout.setVisibility(ImageView.VISIBLE);
+        }
+    }
+
+    @OnClick(R.id.btn_unlock)
+    void onUnlock() {
+        lockLayout.setVisibility(View.GONE);
+    }
+
+    @BindView(R.id.lock_layout)
+    FrameLayout lockLayout;
 
     @BindString(R.string.stand)
     String standString;
@@ -244,9 +264,9 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
 
     protected synchronized void buildLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(spUtil.getGpsInterval());
+        mLocationRequest.setFastestInterval(spUtil.getGpsInterval());
+        mLocationRequest.setPriority(spUtil.getGpsAccuracy());
     }
 
     private void checkLocationPermission() {
@@ -317,10 +337,13 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         if (mGoogleApiClient != null) {
             mGoogleMap.clear();
         }
+
+        dialog = ProgressDialog.show(this, "Preparing for new session", "Locating your position...", true, false);
+
+
         setSPU();
         initNewEvent();
         startLocationUpdate();
-        startTimer();
         isUpdating = true;
     }
 
@@ -346,6 +369,7 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
         removeSPU();
 
         isUpdating = false;
+
         onRecordFinish();
     }
 
@@ -367,6 +391,8 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onLocationChanged(Location location) {
         if (records == null) {
+            dialog.dismiss();
+            startTimer();
             records = new ArrayList<Record>();
             mLastLocation = location;
             LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -560,5 +586,26 @@ public class RecordActivity extends FragmentActivity implements OnMapReadyCallba
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (isUpdating) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Are you sure to cancel this session?")
+                    .setMessage("Data will not be saved, if you cancel this session now.")
+                    .setPositiveButton("Keep recording", null)
+                    .setNegativeButton("Cancel Anyway", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            RecordActivity.this.finish();
+                        }
+                    })
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
+
     }
 }

@@ -66,8 +66,13 @@ public class ChartFragment extends EventFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chart_fragment_layout, container, false);
         ButterKnife.bind(this, view);
-        showChart();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showChart();
     }
 
     @Override
@@ -138,13 +143,17 @@ public class ChartFragment extends EventFragment {
     }
 
     private void showRadarChart() {
+        if (event.getAnalysis() == null) {
+            return;
+        }
+
         List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(3f, 0));
-        entries.add(new Entry(4f, 1));
-        entries.add(new Entry(7f, 2));
-        entries.add(new Entry(8f, 3));
-        entries.add(new Entry(2f, 4));
-        entries.add(new Entry(5f, 5));
+        entries.add(new Entry(event.getAnalysis().getTopSpeedScore(), 0));
+        entries.add(new Entry(event.getAnalysis().getAvgSpeedScore(), 1));
+        entries.add(new Entry(event.getAnalysis().getStaminaScore(), 2));
+        entries.add(new Entry(event.getAnalysis().getActiveScore(), 3));
+        entries.add(new Entry(event.getAnalysis().getPositionScore(), 4));
+        entries.add(new Entry(event.getAnalysis().getWorkRateScore(), 5));
 
         RadarDataSet dataSet = new RadarDataSet(entries, "Last session");
         dataSet.setValueTextColor(Color.WHITE);

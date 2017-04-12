@@ -45,6 +45,9 @@
     <string name="position">Position</string>
     <string name="speed_chart">Speed chart</string>
     <string name="step_chart">Step chart</string>
+    <string name="state_chart">State chart</string>
+    <string name="position_chart">Position Chart</string>
+
 
     <string name="average_speed_title">Avg speed:km/h</string>
     <string name="fastest_speed_title">Max speed:km/h</string>
@@ -53,4 +56,10 @@
     <string name="score">Score</string>
     <string name="recording">Recording</string>
     <string name="field_hint">Enter field name here</string>
+
+    <string name="user_setting">User settings</string>
+    <string name="system_setting">System settings</string>
+    <string name="gps_update_accuracy">GPS accuracy</string>
+    <string name="gps_update_interval">GPS update interval</string>
+
 </resources>

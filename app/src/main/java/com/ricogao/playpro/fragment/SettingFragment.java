@@ -45,6 +45,9 @@ public class SettingFragment extends Fragment {
     @BindView(R.id.tv_user_position)
     TextView tvUserPosition;
 
+    @BindView(R.id.tv_gps_interval)
+    TextView tvGpsInterval;
+
     @OnClick(R.id.btn_user_position)
     void onUserPositionClick() {
         new AlertDialog.Builder(this.getContext())
@@ -98,6 +101,24 @@ public class SettingFragment extends Fragment {
                 .show();
     }
 
+    @OnClick(R.id.btn_gps_interval)
+    void onGpsIntervalClick() {
+        final String items[] = new String[]{"500", "1000", "2000", "3000", "5000"};
+        final long values[] = new long[]{500, 1000, 2000, 3000, 5000};
+
+        new AlertDialog.Builder(this.getContext())
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        spUtil.saveGpsInterval(values[i]);
+                        dialogInterface.dismiss();
+                        tvGpsInterval.setText(items[i]+" ms");
+                    }
+                })
+                .setTitle("Select update interval")
+                .show();
+    }
+
     @OnClick(R.id.btn_profile_img)
     void onProfileImageClick() {
         selectImage();
@@ -118,6 +139,7 @@ public class SettingFragment extends Fragment {
         tvUserName.setText(spUtil.getUsername());
         tvUserWeight.setText(spUtil.getUserWeight() + " kg");
         tvUserPosition.setText(spUtil.getPosition().getPositionName());
+        tvGpsInterval.setText(spUtil.getGpsInterval()+" ms");
     }
 
     private void showProfileImage(Uri uri) {
