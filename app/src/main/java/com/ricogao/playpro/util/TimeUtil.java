@@ -21,4 +21,14 @@ public class TimeUtil {
         long hours = (dT % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
         return hours + "";
     }
+
+    public static String formatMinSec(long dT) {
+        long minutes = (dT % (1000 * 60 * 60)) / (1000 * 60);
+        long seconds = (dT % (1000 * 60)) / 1000;
+
+        String minutesString = (minutes < 10) ? "0" + minutes : minutes + "";
+        String secondsString = (seconds < 10) ? "0" + seconds : seconds + "";
+
+        return minutesString + ":" + secondsString;
+    }
 }

@@ -193,36 +193,19 @@ public class SessionDetailActivity extends AppCompatActivity {
     }
 
     private void readData() {
+
         readDataSub = Observable
                 .just(readEvent(eventId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .doOnNext(new Action1<Event>() {
+                .subscribe(new Action1<Event>() {
                     @Override
                     public void call(Event event) {
                         currentEvent = event;
                         event.loadAssociatedField();
-                    }
-                })
-                .map(new Func1<Event, List<Record>>() {
-                    @Override
-                    public List<Record> call(Event event) {
-                        return event.loadAssociatedRecords();
-                    }
-                }).subscribe(new Subscriber<List<Record>>() {
-                    @Override
-                    public void onCompleted() {
+                        event.loadAssociatedRecords();
+                        event.loadAssociatedAnalysis();
                         trackFragment.setEvent(currentEvent);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.i(TAG, "Load record with error:" + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(List<Record> records) {
-                        Log.i(TAG, records.size() + " records is found.");
                     }
                 });
 

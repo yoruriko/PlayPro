@@ -26,7 +26,7 @@
     <string name="stats">Stats</string>
     <string name="personal_best">Personal best</string>
     <string name="fastest_speed">Fastest speed</string>
-    <string name="longest_session">Longest session</string>
+    <string name="longest_duration">Longest duration</string>
     <string name="longest_distance">Longest distance</string>
     <string name="km">km</string>
 

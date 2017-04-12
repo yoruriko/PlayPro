@@ -64,11 +64,19 @@ public class DetailFragment extends EventFragment {
         showProfileImage();
         tvName.setText(spUtil.getUsername());
         tvDate.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(event.getTimestamp()));
+
         tvDistance.setText(String.format("%.2f", event.getDistance() * 0.001f) + " KM");
         tvTime.setText(TimeUtil.formatDuration(event.getDuration()));
-        //// TODO: 2017/4/8  tvAvgSpeed;
-        tvMaxSpeed.setText(String.format("%.2f", event.getMaxSpeed()));
+        float avgSpeed = event.getDistance() / (event.getDuration() * 0.001f) * 3.6f;
+
+        tvAvgSpeed.setText(String.format("%.2f", avgSpeed));
+        tvMaxSpeed.setText(String.format("%.2f", event.getMaxSpeed() * 3.6f));
+
         tvCalorie.setText(String.format("%.1f", event.getCalories()));
+        tvPace.setText(String.format("%.1f", event.getAnalysis().getStepPace()));
+
+        tvActivePlay.setText(String.format("%.1f", event.getAnalysis().getActiveScore() * 10f) + "%");
+        tvScore.setText(String.format("%.1f", event.getAnalysis().getScore()));
     }
 
     private void showProfileImage() {

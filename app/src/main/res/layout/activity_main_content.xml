@@ -37,17 +37,17 @@
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_toEndOf="@id/profile_img"
                     android:text="@string/profile_name"
-                    android:textSize="@dimen/font_size_medium"
                     android:textColor="@color/font_grey"
+                    android:textSize="@dimen/font_size_medium"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/profile_position_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/profile_img"
                     android:layout_alignStart="@id/profile_name_tv"
                     android:text="@string/profile_position"
-                    android:layout_alignBottom="@id/profile_img"
                     android:textColor="@color/font_dark_grey" />
 
 
@@ -299,10 +299,11 @@
                         android:textColor="@color/font_grey" />
 
                     <TextView
+                        android:id="@+id/tv_date_fastest_speed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/title_fastest_speed"
-                        android:text="2017-03-15"
+                        android:text="2017-01-01"
                         android:textColor="@color/font_dark_grey" />
 
                     <ImageView
@@ -310,8 +311,8 @@
                         android:layout_width="@dimen/arrow_size"
                         android:layout_height="@dimen/arrow_size"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginStart="@dimen/margin_small"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_small"
                         android:src="@drawable/right_arrow"
                         android:tint="@color/font_grey" />
 
@@ -321,7 +322,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/arrow_fastest_speed"
-                        android:text="12.5 km/h"
+                        android:text="0.00 km/h"
                         android:textColor="@color/btn_primary"
                         android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold" />
@@ -336,27 +337,28 @@
                     android:background="@color/colorPrimary" />
 
                 <RelativeLayout
-                    android:id="@+id/panel_longest_session"
+                    android:id="@+id/panel_longest_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_small">
 
                     <TextView
-                        android:id="@+id/title_longest_session"
+                        android:id="@+id/title_longest_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/longest_session"
+                        android:text="@string/longest_duration"
                         android:textColor="@color/font_grey" />
 
                     <TextView
+                        android:id="@+id/tv_date_longest_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/title_longest_session"
-                        android:text="2017-03-15"
+                        android:layout_below="@id/title_longest_duration"
+                        android:text="2017-01-01"
                         android:textColor="@color/font_dark_grey" />
 
                     <ImageView
-                        android:id="@+id/arrow_longest_session"
+                        android:id="@+id/arrow_longest_duration"
                         android:layout_width="@dimen/arrow_size"
                         android:layout_height="@dimen/arrow_size"
                         android:layout_alignParentEnd="true"
@@ -366,12 +368,12 @@
                         android:tint="@color/font_grey" />
 
                     <TextView
-                        android:id="@+id/tv_longest_session"
+                        android:id="@+id/tv_longest_duration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/arrow_longest_session"
-                        android:text="01:33:25"
+                        android:layout_toStartOf="@id/arrow_longest_duration"
+                        android:text="00:00:00"
                         android:textColor="@color/btn_primary"
                         android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold" />
@@ -399,19 +401,20 @@
                         android:textColor="@color/font_grey" />
 
                     <TextView
+                        android:id="@+id/tv_date_longest_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/title_longest_distance"
-                        android:text="2017-03-15"
+                        android:text="2017-01-01"
                         android:textColor="@color/font_dark_grey" />
 
                     <ImageView
                         android:id="@+id/arrow_longest_distance"
                         android:layout_width="@dimen/arrow_size"
                         android:layout_height="@dimen/arrow_size"
-                        android:layout_marginStart="@dimen/margin_small"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_small"
                         android:src="@drawable/right_arrow"
                         android:tint="@color/font_grey" />
 
@@ -421,7 +424,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/arrow_longest_distance"
-                        android:text="12.2 km"
+                        android:text="0.00 km"
                         android:textColor="@color/btn_primary"
                         android:textSize="@dimen/font_size_medium"
                         android:textStyle="bold" />

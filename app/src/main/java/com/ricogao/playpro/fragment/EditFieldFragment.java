@@ -23,10 +23,13 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ricogao.playpro.R;
+import com.ricogao.playpro.model.Analysis;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Field;
 import com.ricogao.playpro.model.Record;
+import com.ricogao.playpro.util.AnalysisUtil;
 import com.ricogao.playpro.util.PolygonUtils;
+import com.ricogao.playpro.util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,25 +65,32 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
 
     private Polygon polygonBound;
     private Field currentField;
+    private Analysis currentAnalysis;
     private Event event;
     private boolean isNewField;
 
     private PolygonUtils polygonUtils;
+    private SharedPreferencesUtil spUtil;
 
 
     private int insideCount, centreCount, fontCount, backCount;
 
     private List<LatLng> centreBound, fontBound, backBound;
 
+    private SaveFieldListener listener;
+
+    public interface SaveFieldListener {
+        void onSaveFinished();
+    }
+
+    public void setListener(SaveFieldListener listener) {
+        this.listener = listener;
+    }
+
     @BindColor(R.color.blue50)
     int blue50;
     @BindView(R.id.edt_name)
     EditText edtName;
-
-    @OnClick(R.id.btn_test)
-    void onTestClick() {
-        runAnalysis();
-    }
 
     @Nullable
     @Override
@@ -89,6 +99,7 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
         ButterKnife.bind(this, view);
         initView();
         polygonUtils = new PolygonUtils();
+        spUtil = new SharedPreferencesUtil(this.getContext());
         return view;
     }
 
@@ -112,9 +123,9 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
         mapFragment.getMapAsync(this);
     }
 
+
     public void setData(Event event, Field field) {
         this.event = event;
-
         if (field != null) {
             currentField = field;
             isNewField = false;
@@ -125,11 +136,21 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
     }
 
     public void saveField() {
+        runAnalysis();
+    }
+
+    private void setField() {
         currentField.setName(edtName.getText().toString());
         currentField.setBound(currentBounds);
+        currentField.save();
         event.setFieldId(currentField.getId());
         event.setField(currentField);
-        event.save();
+    }
+
+    private void setAnalysis() {
+        currentAnalysis.save();
+        event.setAnalysisId(currentAnalysis.getId());
+        event.setAnalysis(currentAnalysis);
     }
 
     private void processData() {
@@ -190,10 +211,6 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
         getCentreBound();
         getFontBackBound();
 
-        mGoogleMap.addPolygon(new PolygonOptions().addAll(centreBound).strokeColor(Color.RED).fillColor(Color.RED).geodesic(true));
-        mGoogleMap.addPolygon(new PolygonOptions().addAll(fontBound).strokeColor(Color.YELLOW).fillColor(Color.YELLOW).geodesic(true));
-        mGoogleMap.addPolygon(new PolygonOptions().addAll(backBound).strokeColor(Color.GREEN).fillColor(Color.GREEN).geodesic(true));
-
         subscription = Observable.from(event.getRecords())
                 .subscribeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
@@ -206,12 +223,21 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
                 .subscribe(new Subscriber<LatLng>() {
                     @Override
                     public void onCompleted() {
-                        Log.i(TAG, "Inside:" + insideCount + ", Centre:" + centreCount + ", Wing:" + (insideCount - centreCount) + ", font:" + fontCount + ", back:" + backCount + " , centre:" + (insideCount - fontCount - backCount));
+                        currentAnalysis = AnalysisUtil.generateAnalysisFromEvent(event, spUtil.getPosition(), centreCount, insideCount - centreCount,
+                                fontCount, insideCount - fontCount - backCount, backCount);
+                        setField();
+                        setAnalysis();
+                        event.save();
+
+                        if (listener != null) {
+                            listener.onSaveFinished();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, e.getMessage());
+                        e.printStackTrace();
                     }
 
                     @Override
@@ -220,6 +246,7 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
                     }
                 });
     }
+
 
     private void checkPosition(LatLng data) {
         if (polygonUtils.isInsidePolygon(data, currentBounds)) {

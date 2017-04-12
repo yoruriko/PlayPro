@@ -109,19 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:layout_weight="1"
-                    android:text="Slowest: 0.00"
-                    android:textColor="@color/font_grey"
-                    android:textSize="@dimen/font_size_extra_small"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_speed_average"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_small"
-                    android:layout_weight="1"
-                    android:text="Average: 0.00"
-                    android:textAlignment="center"
+                    android:text="Slowest: 0.00 km/h"
                     android:textColor="@color/font_grey"
                     android:textSize="@dimen/font_size_extra_small"
                     android:textStyle="bold" />
@@ -132,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:layout_weight="1"
-                    android:text="Fastest: 0.00"
+                    android:text="Fastest: 0.00 km/h"
                     android:textAlignment="textEnd"
                     android:textColor="@color/font_grey"
                     android:textSize="@dimen/font_size_extra_small"

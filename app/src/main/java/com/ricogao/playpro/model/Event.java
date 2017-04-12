@@ -1,6 +1,5 @@
 package com.ricogao.playpro.model;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -19,6 +18,7 @@ public class Event extends BaseModel {
 
     private List<Record> records;
     private Field field;
+    private Analysis analysis;
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -26,6 +26,9 @@ public class Event extends BaseModel {
 
     @Column
     long fieldId = -1;
+
+    @Column
+    long analysisId = -1;
 
     @Column
     long timestamp;
@@ -110,6 +113,22 @@ public class Event extends BaseModel {
         return field;
     }
 
+    public long getAnalysisId() {
+        return analysisId;
+    }
+
+    public void setAnalysisId(long analysisId) {
+        this.analysisId = analysisId;
+    }
+
+    public Analysis getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(Analysis analysis) {
+        this.analysis = analysis;
+    }
+
     @Override
     public void save() {
         super.save();
@@ -124,6 +143,10 @@ public class Event extends BaseModel {
             field.save();
         }
 
+        if (this.analysis != null) {
+            analysis.save();
+        }
+
     }
 
     @Override
@@ -131,9 +154,16 @@ public class Event extends BaseModel {
         if (records == null) {
             loadAssociatedRecords();
         }
+
+        if (analysis == null) {
+            loadAssociatedAnalysis();
+        }
+
         for (Record r : records) {
             r.delete();
         }
+
+        analysis.delete();
 
         super.delete();
     }
@@ -158,5 +188,18 @@ public class Event extends BaseModel {
                 .querySingle();
 
         return field;
+    }
+
+    public Analysis loadAssociatedAnalysis() {
+        if (analysisId == -1) {
+            return null;
+        }
+
+        this.analysis = new Select()
+                .from(Analysis.class)
+                .where(Condition.column(Analysis_Table.id.getNameAlias()).eq(analysisId))
+                .querySingle();
+
+        return analysis;
     }
 }

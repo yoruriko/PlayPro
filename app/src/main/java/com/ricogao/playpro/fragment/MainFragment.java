@@ -2,7 +2,6 @@ package com.ricogao.playpro.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.ricogao.playpro.R;
+import com.ricogao.playpro.activity.SessionDetailActivity;
 import com.ricogao.playpro.activity.SessionListActivity;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Event_Table;
@@ -27,6 +27,7 @@ import com.ricogao.playpro.util.SharedPreferencesUtil;
 import com.ricogao.playpro.util.TimeUtil;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,21 @@ public class MainFragment extends Fragment {
         startActivity(it);
     }
 
+    @OnClick(R.id.panel_fastest_speed)
+    void onFastestSpeedClick() {
+        startEvent(fastestSpeedEvent.getId());
+    }
+
+    @OnClick(R.id.panel_longest_distance)
+    void onLongestDistanceClick() {
+        startEvent(longestDistanceEvent.getId());
+    }
+
+    @OnClick(R.id.panel_longest_duration)
+    void onLongestDurationClick() {
+        startEvent(longestDurationEvent.getId());
+    }
+
     @BindView(R.id.radar_chart)
     RadarChart radarChart;
 
@@ -75,11 +91,28 @@ public class MainFragment extends Fragment {
     @BindView(R.id.profile_position_tv)
     TextView tvPosition;
 
+    @BindView(R.id.tv_fastest_speed)
+    TextView tvFastestSpeed;
+    @BindView(R.id.tv_longest_distance)
+    TextView tvLongestDistance;
+    @BindView(R.id.tv_longest_duration)
+    TextView tvLongestDuration;
+    @BindView(R.id.tv_date_fastest_speed)
+    TextView tvDateFastestSpeed;
+    @BindView(R.id.tv_date_longest_distance)
+    TextView tvDateLongestDistance;
+    @BindView(R.id.tv_date_longest_duration)
+    TextView tvDateLongestDuration;
+
 
     private int sessionCount;
     private float totalDistance;
     private long totalDuration;
     private SharedPreferencesUtil spUtil;
+    private Event fastestSpeedEvent, longestDurationEvent, longestDistanceEvent;
+
+    private long longestDuration;
+    private float fastestSpeed, longestDistance;
 
     Subscription loadDataSub;
 
@@ -120,12 +153,12 @@ public class MainFragment extends Fragment {
         dataSet2.setDrawFilled(true);
 
         List<String> labels = new ArrayList<>();
-        labels.add("Speed");
-        labels.add("Power");
+        labels.add("Top Speed");
+        labels.add("Avg Speed");
         labels.add("Stamina");
-        labels.add("Agility");
-        labels.add("Recovery time");
-        labels.add("Skill");
+        labels.add("Active");
+        labels.add("Position");
+        labels.add("Work rate");
 
         List<RadarDataSet> dataSets = new ArrayList<>();
         dataSets.add(dataSet);
@@ -198,9 +231,7 @@ public class MainFragment extends Fragment {
                 .subscribe(new Subscriber<Event>() {
                     @Override
                     public void onCompleted() {
-                        tvTotalSession.setText(sessionCount + "");
-                        tvTotalDistance.setText(String.format("%.2f", totalDistance * 0.001f) + " km");
-                        tvTotalDuration.setText(TimeUtil.formatHour(totalDuration) + " h");
+                        showData();
                     }
 
                     @Override
@@ -212,8 +243,42 @@ public class MainFragment extends Fragment {
                     public void onNext(Event event) {
                         totalDistance += event.getDistance();
                         totalDuration += event.getDuration();
+
+                        if (event.getMaxSpeed() > fastestSpeed) {
+                            fastestSpeed = event.getMaxSpeed();
+                            fastestSpeedEvent = event;
+                        }
+
+                        if (event.getDuration() > longestDuration) {
+                            longestDuration = event.getDuration();
+                            longestDurationEvent = event;
+                        }
+
+                        if (event.getDistance() > longestDistance) {
+                            longestDistance = event.getDistance();
+                            longestDistanceEvent = event;
+                        }
                     }
                 });
     }
 
+    private void showData() {
+        tvTotalSession.setText(sessionCount + "");
+        tvTotalDistance.setText(String.format("%.2f", totalDistance * 0.001f) + " km");
+        tvTotalDuration.setText(TimeUtil.formatHour(totalDuration) + " h");
+
+        tvDateFastestSpeed.setText(new SimpleDateFormat("yyyy/MM/dd").format(fastestSpeedEvent.getTimestamp()));
+        tvDateLongestDistance.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDistanceEvent.getTimestamp()));
+        tvDateLongestDuration.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDurationEvent.getTimestamp()));
+
+        tvFastestSpeed.setText(String.format("%.2f", fastestSpeed * 3.6f) + " km/h");
+        tvLongestDistance.setText(String.format("%.2f", longestDistance * 0.001f) + " km");
+        tvLongestDuration.setText(TimeUtil.formatDuration(longestDuration));
+    }
+
+    private void startEvent(long eventId) {
+        Intent it = new Intent(this.getContext(), SessionDetailActivity.class);
+        it.putExtra("eventId", eventId);
+        startActivity(it);
+    }
 }

@@ -75,8 +75,6 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
 
     @BindView(R.id.tv_speed_slowest)
     TextView tvMinSpeed;
-    @BindView(R.id.tv_speed_average)
-    TextView tvAvgSpeed;
     @BindView(R.id.tv_speed_fastest)
     TextView tvMaxSpeed;
     @BindView(R.id.btn_show_field)
@@ -139,7 +137,7 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
         tvDistance.setText(String.format("%.2f", event.getDistance() * 0.001f));
         tvDate.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(event.getTimestamp()));
 
-        tvMaxSpeed.setText("Fastest: " + String.format("%.2f", event.getMaxSpeed()));
+        tvMaxSpeed.setText("Fastest: " + String.format("%.2f", event.getMaxSpeed() * 3.6f) + " km/h");
 
 
         holder = new ArrayList<>();
@@ -184,6 +182,7 @@ public class TrackFragment extends EventFragment implements OnMapReadyCallback {
         btnShowField.setImageResource(R.drawable.ic_grid_on_black_24dp);
 
         List<LatLng> bound = event.getField().getBound();
+
         Location l1 = new Location("Playpro");
         l1.setLatitude(bound.get(0).latitude);
         l1.setLongitude(bound.get(0).longitude);

@@ -1,6 +1,6 @@
 package com.ricogao.playpro.activity;
 
-import android.graphics.drawable.Drawable;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +29,7 @@ import rx.schedulers.Schedulers;
  * Created by ricogao on 2017/4/8.
  */
 
-public class EditFieldActivity extends AppCompatActivity {
+public class EditFieldActivity extends AppCompatActivity implements EditFieldFragment.SaveFieldListener {
 
     private final static String TAG = EditFieldActivity.class.getSimpleName();
 
@@ -40,6 +40,8 @@ public class EditFieldActivity extends AppCompatActivity {
     private Event currentEvent;
     private Field currentField;
     private EditFieldFragment editFieldFragment;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class EditFieldActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         editFieldFragment = new EditFieldFragment();
+        editFieldFragment.setListener(EditFieldActivity.this);
 
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, editFieldFragment).commit();
         readData();
@@ -75,16 +78,12 @@ public class EditFieldActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.action_save:
-                onSaveClick();
-                setResult(FieldListActivity.REQUEST_SELECTED);
-                finish();
+                dialog=ProgressDialog.show(this,"Saving Field","Saving field and analysis data...",true,false);
+                dialog.show();
+                editFieldFragment.saveField();
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void onSaveClick() {
-        editFieldFragment.saveField();
     }
 
     @Override
@@ -130,6 +129,7 @@ public class EditFieldActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted() {
                         editFieldFragment.setData(currentEvent, currentField);
+
                     }
 
                     @Override
@@ -150,5 +150,12 @@ public class EditFieldActivity extends AppCompatActivity {
                 .from(Field.class)
                 .where(Condition.column(Field_Table.id.getNameAlias()).eq(fieldId))
                 .querySingle();
+    }
+
+    @Override
+    public void onSaveFinished() {
+        dialog.dismiss();
+        setResult(FieldListActivity.REQUEST_SELECTED);
+        finish();
     }
 }

@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.RadarDataSet;
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.model.Event;
 import com.ricogao.playpro.model.Record;
+import com.ricogao.playpro.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public class ChartFragment extends EventFragment {
                     public void call(Record record) {
                         speedEntries.add(new Entry((record.getSpeed() * 3.6f), count));
                         stepEntries.add(new Entry(record.getSteps(), count));
-                        labels.add((record.getTimestamp() - start) * 0.001f + "");
+                        labels.add(TimeUtil.formatMinSec(record.getTimestamp() - start));
                         count++;
                     }
                 });
@@ -152,12 +153,12 @@ public class ChartFragment extends EventFragment {
 
 
         List<String> labels = new ArrayList<>();
-        labels.add("Speed");
-        labels.add("Power");
+        labels.add("Top Speed");
+        labels.add("Avg Speed");
         labels.add("Stamina");
-        labels.add("Agility");
-        labels.add("Recovery time");
-        labels.add("Skill");
+        labels.add("Active");
+        labels.add("Position");
+        labels.add("Work rate");
 
 
         RadarData data = new RadarData(labels, dataSet);
