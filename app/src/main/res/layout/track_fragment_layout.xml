@@ -145,11 +145,13 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_extra_small"
-                android:src="@drawable/ic_date"
-                android:tint="@color/font_grey" />
+                android:layout_width="@dimen/icon_size_extra_small"
+                android:layout_height="@dimen/icon_size_extra_small"
+                android:layout_marginBottom="@dimen/margin_extra_small"
+                android:layout_marginLeft="@dimen/margin_extra_small"
+                android:layout_marginTop="@dimen/margin_extra_small"
+                android:tint="@color/font_grey"
+                android:src="@drawable/ic_date" />
 
             <TextView
                 android:id="@+id/tv_date"

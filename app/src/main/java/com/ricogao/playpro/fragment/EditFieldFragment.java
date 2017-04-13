@@ -2,6 +2,8 @@ package com.ricogao.playpro.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -53,6 +55,8 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
     private final static String TAG = EditFieldFragment.class.getSimpleName();
     private GoogleMap mGoogleMap;
 
+    private final static int SAVE_FINISH = 123;
+
     //order in top left,top right,bottom right, bottom left
     private List<LatLng> estimateBounds;
 
@@ -78,6 +82,19 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
     private List<LatLng> centreBound, fontBound, backBound;
 
     private SaveFieldListener listener;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (msg.what == SAVE_FINISH) {
+                if (listener != null) {
+                    listener.onSaveFinished();
+                }
+            }
+            super.handleMessage(msg);
+        }
+    };
 
     public interface SaveFieldListener {
         void onSaveFinished();
@@ -229,9 +246,8 @@ public class EditFieldFragment extends Fragment implements OnMapReadyCallback, G
                         setAnalysis();
                         event.save();
 
-                        if (listener != null) {
-                            listener.onSaveFinished();
-                        }
+                        //set delay for saving
+                        mHandler.sendEmptyMessageDelayed(SAVE_FINISH, 3000);
                     }
 
                     @Override

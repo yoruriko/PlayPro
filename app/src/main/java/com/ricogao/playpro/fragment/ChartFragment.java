@@ -175,6 +175,7 @@ public class ChartFragment extends EventFragment {
         statsChart.setWebColor(Color.WHITE);
         statsChart.getXAxis().setTextColor(Color.WHITE);
         statsChart.getYAxis().setDrawLabels(false);
+        statsChart.getYAxis().setAxisMaxValue(10f);
         statsChart.setDescription("");
         statsChart.setData(data);
         statsChart.getLegend().setEnabled(false);

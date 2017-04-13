@@ -63,7 +63,7 @@
                         android:id="@+id/profile_ranking_img"
                         android:layout_width="@dimen/icon_rank_size"
                         android:layout_height="@dimen/icon_rank_size"
-                        android:src="@drawable/icon_rank_1" />
+                        android:src="@drawable/ic_ranking_1" />
 
                     <TextView
                         android:id="@+id/profile_ranking_tv"
@@ -303,7 +303,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/title_fastest_speed"
-                        android:text="2017-01-01"
+                        android:text="No data"
                         android:textColor="@color/font_dark_grey" />
 
                     <ImageView
@@ -354,7 +354,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/title_longest_duration"
-                        android:text="2017-01-01"
+                        android:text="No data"
                         android:textColor="@color/font_dark_grey" />
 
                     <ImageView
@@ -405,7 +405,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/title_longest_distance"
-                        android:text="2017-01-01"
+                        android:text="No data"
                         android:textColor="@color/font_dark_grey" />
 
                     <ImageView

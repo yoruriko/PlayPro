@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.location.LocationRequest;
 import com.ricogao.playpro.R;
 import com.ricogao.playpro.util.CircleTransform;
 import com.ricogao.playpro.util.Position;
@@ -47,6 +48,9 @@ public class SettingFragment extends Fragment {
 
     @BindView(R.id.tv_gps_interval)
     TextView tvGpsInterval;
+
+    @BindView(R.id.tv_gps_accuracy)
+    TextView tvGpsAccuracy;
 
     @OnClick(R.id.btn_user_position)
     void onUserPositionClick() {
@@ -112,10 +116,27 @@ public class SettingFragment extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         spUtil.saveGpsInterval(values[i]);
                         dialogInterface.dismiss();
-                        tvGpsInterval.setText(items[i]+" ms");
+                        tvGpsInterval.setText(items[i]);
                     }
                 })
                 .setTitle("Select update interval")
+                .show();
+    }
+
+    @OnClick(R.id.btn_gps_accuracy)
+    void onGpsAccuracyClick() {
+        final String items[] = new String[]{"High Accuracy", "Balanced Power & Accuracy", "Low Power"};
+        final int values[] = new int[]{LocationRequest.PRIORITY_HIGH_ACCURACY, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY, LocationRequest.PRIORITY_LOW_POWER};
+        new AlertDialog.Builder(this.getContext())
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        spUtil.saveGpsAccuracy(values[i]);
+                        dialogInterface.dismiss();
+                        tvGpsAccuracy.setText(items[i] + " ms");
+                    }
+                })
+                .setTitle("Select GPS accuracy")
                 .show();
     }
 
@@ -139,7 +160,20 @@ public class SettingFragment extends Fragment {
         tvUserName.setText(spUtil.getUsername());
         tvUserWeight.setText(spUtil.getUserWeight() + " kg");
         tvUserPosition.setText(spUtil.getPosition().getPositionName());
-        tvGpsInterval.setText(spUtil.getGpsInterval()+" ms");
+        tvGpsInterval.setText(spUtil.getGpsInterval() + " ms");
+
+        switch (spUtil.getGpsAccuracy()) {
+            case LocationRequest.PRIORITY_LOW_POWER:
+                tvGpsAccuracy.setText("Low Power");
+                break;
+            case LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY:
+                tvGpsAccuracy.setText("Balanced Power & Accuracy");
+                break;
+            case LocationRequest.PRIORITY_HIGH_ACCURACY:
+                tvGpsAccuracy.setText("High Accuracy");
+                break;
+        }
+
     }
 
     private void showProfileImage(Uri uri) {

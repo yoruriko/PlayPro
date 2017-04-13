@@ -59,17 +59,20 @@ public class MainFragment extends Fragment {
 
     @OnClick(R.id.panel_fastest_speed)
     void onFastestSpeedClick() {
-        startEvent(fastestSpeedEvent.getId());
+        if (fastestSpeedEvent != null)
+            startEvent(fastestSpeedEvent.getId());
     }
 
     @OnClick(R.id.panel_longest_distance)
     void onLongestDistanceClick() {
-        startEvent(longestDistanceEvent.getId());
+        if (longestDistanceEvent != null)
+            startEvent(longestDistanceEvent.getId());
     }
 
     @OnClick(R.id.panel_longest_duration)
     void onLongestDurationClick() {
-        startEvent(longestDurationEvent.getId());
+        if (longestDurationEvent != null)
+            startEvent(longestDurationEvent.getId());
     }
 
     @BindView(R.id.radar_chart)
@@ -105,6 +108,11 @@ public class MainFragment extends Fragment {
     TextView tvDateLongestDistance;
     @BindView(R.id.tv_date_longest_duration)
     TextView tvDateLongestDuration;
+
+    @BindView(R.id.profile_ranking_img)
+    ImageView imgRanking;
+    @BindView(R.id.profile_ranking_tv)
+    TextView tvRanking;
 
 
     private int sessionCount;
@@ -142,12 +150,12 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
         loadData();
         loadAnalysis();
         tvName.setText(spUtil.getUsername());
         tvPosition.setText(spUtil.getPosition().getPositionName());
         showProfileImage();
+        super.onResume();
     }
 
     private void showProfileImage() {
@@ -163,6 +171,11 @@ public class MainFragment extends Fragment {
     }
 
     private void showRadarChart() {
+
+        if (analysises.size() < 1) {
+            radarChart.clear();
+            return;
+        }
 
         List<Entry> entries = new ArrayList<>();
         entries.add(new Entry(analysises.get(0).getTopSpeedScore(), 0));
@@ -206,6 +219,7 @@ public class MainFragment extends Fragment {
         radarChart.setWebColor(Color.WHITE);
         radarChart.getXAxis().setTextColor(Color.WHITE);
         radarChart.getYAxis().setDrawLabels(false);
+        radarChart.getYAxis().setAxisMaxValue(10f);
         radarChart.setDescription("");
         radarChart.setData(data);
         radarChart.getLegend().setTextColor(Color.WHITE);
@@ -243,9 +257,7 @@ public class MainFragment extends Fragment {
                 .subscribe(new Subscriber<Analysis>() {
                     @Override
                     public void onCompleted() {
-                        if (analysises.size() > 0) {
-                            showRadarChart();
-                        }
+                        showRadarChart();
                     }
 
                     @Override
@@ -281,6 +293,12 @@ public class MainFragment extends Fragment {
                         sessionCount = events.size();
                         totalDistance = 0;
                         totalDuration = 0;
+                        fastestSpeed = 0;
+                        longestDuration = 0;
+                        longestDistance = 0;
+                        fastestSpeedEvent = null;
+                        longestDurationEvent = null;
+                        longestDistanceEvent = null;
                     }
                 })
                 .flatMap(new Func1<List<Event>, Observable<Event>>() {
@@ -335,7 +353,17 @@ public class MainFragment extends Fragment {
         tvTotalDistance.setText(String.format("%.2f", totalDistance * 0.001f) + " km");
         tvTotalDuration.setText(TimeUtil.formatHour(totalDuration) + " h");
 
-        if (fastestSpeedEvent != null) {
+        imgRanking.setImageResource(R.drawable.ic_ranking_1);
+        if (sessionCount > 3 && totalDistance > 5000 && totalDuration > (3 * 60 * 60 * 1000)) {
+            imgRanking.setImageResource(R.drawable.ic_ranking_2);
+        } else if (sessionCount > 10 && totalDistance > 15000 && totalDuration > (10 * 60 * 60 * 1000)) {
+            imgRanking.setImageResource(R.drawable.ic_ranking_3);
+        } else if (sessionCount > 20 && totalDistance > 30000 && totalDuration > (24 * 60 * 60 * 1000)) {
+            imgRanking.setImageResource(R.drawable.ic_ranking_4);
+        }
+
+
+        if (fastestSpeedEvent != null && longestDistanceEvent != null && longestDurationEvent != null) {
             tvDateFastestSpeed.setText(new SimpleDateFormat("yyyy/MM/dd").format(fastestSpeedEvent.getTimestamp()));
             tvDateLongestDistance.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDistanceEvent.getTimestamp()));
             tvDateLongestDuration.setText(new SimpleDateFormat("yyyy/MM/dd").format(longestDurationEvent.getTimestamp()));

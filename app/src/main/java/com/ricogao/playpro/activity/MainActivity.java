@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_layout);
         ButterKnife.bind(this);
 
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+        }
+
         mainFragment = new MainFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.main_content, mainFragment).commit();
     }
