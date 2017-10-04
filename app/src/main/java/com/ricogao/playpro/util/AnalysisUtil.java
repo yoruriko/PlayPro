@@ -99,46 +99,30 @@ public class AnalysisUtil {
 
         switch (pos) {
             case CENTRE_FORWARD:
-
                 score1 = centre / total * 5f;
                 score2 = font / total * 3f;
                 score3 = midfield / total * 2f;
-
                 return score1 + score2 + score3;
-
             case CENTRE_MIDFIELD:
-
                 score1 = centre / total * 5f;
                 score2 = midfield / total * 3f;
                 score3 = (font + back) / total * 2f;
-
                 return score1 + score2 + score3;
-
             case WING_MIDFIELD:
-
                 score1 = wing / total * 5f;
                 score2 = midfield / total * 3f;
                 score3 = (font + back) / total * 2f;
-
                 return score1 + score2 + score3;
-
             case CENTRE_BACK:
-
                 score1 = centre / total * 5f;
                 score2 = back / total * 3f;
                 score3 = midfield / total * 2f;
-
                 return score1 + score2 + score3;
-
             case WING_BACK:
-
                 score1 = wing / total * 5f;
                 score2 = back / total * 3f;
                 score3 = midfield / total * 2f;
-
                 return score1 + score2 + score3;
-
-
             default:
                 return 0f;
         }

@@ -19,7 +19,7 @@
     <string name="finish">Finish</string>
 
     <string name="current_state_title">Current state</string>
-    <string name="calorie_title">Calories: cal</string>
+    <string name="calorie_title">Calories: kCal</string>
     <string name="speed_title">Speed: km/h</string>
     <string name="distance_title">Distance: km</string>
     <string name="view_sessions">View all sessions</string>

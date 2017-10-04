@@ -26,7 +26,7 @@ public class SensorProcessUnit implements SensorEventListener {
     private final static int WINDOW_SIZE = 5;
 
     //filter reading sample size
-    private final static int SAMPLE_SIZE = 50;
+    private final static int SAMPLE_SIZE = 30;
 
     //range of the time threshold of a step, unit ms
     private final static int MIN_STEP_THRESHOLD = 200;
@@ -176,10 +176,10 @@ public class SensorProcessUnit implements SensorEventListener {
     private void processSample() {
 
         //Dynamic Precision = (Change in peak to peak)/ num of peaks
-        //when there are less than 2 peaks in the sample take 1/5 of the sample max as precision
+        //when there are less than 2 peaks in the sample take 1/10 of the sample max as precision
         samplePrecision = (peakCount > 1) ? peakToPeakSum * (1.0f / peakCount) : sampleMax * 0.1f;
 
-        //Dynamic Threshold = (Max-Min)/2 in the last 50 samples
+        //Dynamic Threshold = (Max-Min)/2 in the last 30 samples
         sampleThreshold = (sampleMax - sampleMin) * 0.5f;
 
         //update current state with predict state
